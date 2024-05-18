@@ -1,0 +1,1074 @@
+[
+    {
+        "School": "Air Force",
+        "Nickname": "Falcons",
+        "City": "USAF Academy",
+        "State": "CO",
+        "Enrollment": "4,181",
+        "Conference": "Mountain West"
+    },
+    {
+        "School": "Akron",
+        "Nickname": "Zips",
+        "City": "Akron",
+        "State": "OH",
+        "Enrollment": "14,516",
+        "Conference": "MAC"
+    },
+    {
+        "School": "Alabama",
+        "Nickname": "Crimson Tide",
+        "City": "Tuscaloosa",
+        "State": "AL",
+        "Enrollment": "38,316",
+        "Conference": "SEC"
+    },
+    {
+        "School": "Appalachian State",
+        "Nickname": "Mountaineers",
+        "City": "Boone",
+        "State": "NC",
+        "Enrollment": "20,641",
+        "Conference": "Sun Belt"
+    },
+    {
+        "School": "Arizona",
+        "Nickname": "Wildcats",
+        "City": "Tucson",
+        "State": "AZ",
+        "Enrollment": "49,471",
+        "Conference": "Big 12"
+    },
+    {
+        "School": "Arizona State",
+        "Nickname": "Sun Devils",
+        "City": "Tempe",
+        "State": "AZ",
+        "Enrollment": "77,881",
+        "Conference": "Big 12"
+    },
+    {
+        "School": "Arkansas",
+        "Nickname": "Razorbacks",
+        "City": "Fayetteville",
+        "State": "AR",
+        "Enrollment": "29,068",
+        "Conference": "SEC"
+    },
+    {
+        "School": "Arkansas State",
+        "Nickname": "Red Wolves",
+        "City": "Jonesboro",
+        "State": "AR",
+        "Enrollment": "12,863",
+        "Conference": "Sun Belt"
+    },
+    {
+        "School": "Army",
+        "Nickname": "Black Knights",
+        "City": "West Point",
+        "State": "NY",
+        "Enrollment": "4,594",
+        "Conference": "American"
+    },
+    {
+        "School": "Auburn",
+        "Nickname": "Tigers",
+        "City": "Auburn",
+        "State": "AL",
+        "Enrollment": "31,526",
+        "Conference": "SEC"
+    },
+    {
+        "School": "Ball State",
+        "Nickname": "Cardinals",
+        "City": "Muncie",
+        "State": "IN",
+        "Enrollment": "19,337",
+        "Conference": "MAC"
+    },
+    {
+        "School": "Baylor",
+        "Nickname": "Bears",
+        "City": "Waco",
+        "State": "TX",
+        "Enrollment": "20,626",
+        "Conference": "Big 12"
+    },
+    {
+        "School": "Boise State",
+        "Nickname": "Broncos",
+        "City": "Boise",
+        "State": "ID",
+        "Enrollment": "25,830",
+        "Conference": "Mountain West"
+    },
+    {
+        "School": "Boston College",
+        "Nickname": "Eagles",
+        "City": "Chestnut Hill",
+        "State": "MA",
+        "Enrollment": "15,046",
+        "Conference": "ACC"
+    },
+    {
+        "School": "Bowling Green",
+        "Nickname": "Falcons",
+        "City": "Bowling Green",
+        "State": "OH",
+        "Enrollment": "17,645",
+        "Conference": "MAC"
+    },
+    {
+        "School": "Buffalo",
+        "Nickname": "Bulls",
+        "City": "Buffalo",
+        "State": "NY",
+        "Enrollment": "32,332",
+        "Conference": "MAC"
+    },
+    {
+        "School": "BYU",
+        "Nickname": "Cougars",
+        "City": "Provo",
+        "State": "UT",
+        "Enrollment": "34,802",
+        "Conference": "Big 12"
+    },
+    {
+        "School": "California",
+        "Nickname": "Golden Bears",
+        "City": "Berkeley",
+        "State": "CA",
+        "Enrollment": "45,435",
+        "Conference": "ACC"
+    },
+    {
+        "School": "Central Michigan",
+        "Nickname": "Chippewas",
+        "City": "Mount Pleasant",
+        "State": "MI",
+        "Enrollment": "15,465",
+        "Conference": "MAC"
+    },
+    {
+        "School": "Charlotte",
+        "Nickname": "49ers",
+        "City": "Charlotte",
+        "State": "NC",
+        "Enrollment": "30,448",
+        "Conference": "American"
+    },
+    {
+        "School": "Cincinnati",
+        "Nickname": "Bearcats",
+        "City": "Cincinnati",
+        "State": "OH",
+        "Enrollment": "40,281",
+        "Conference": "Big 12"
+    },
+    {
+        "School": "Clemson",
+        "Nickname": "Tigers",
+        "City": "Clemson",
+        "State": "SC",
+        "Enrollment": "27,341",
+        "Conference": "ACC"
+    },
+    {
+        "School": "Coastal Carolina",
+        "Nickname": "Chanticleers",
+        "City": "Conway",
+        "State": "SC",
+        "Enrollment": "10,473",
+        "Conference": "Sun Belt"
+    },
+    {
+        "School": "Colorado",
+        "Nickname": "Buffaloes",
+        "City": "Boulder",
+        "State": "CO",
+        "Enrollment": "37,956",
+        "Conference": "Big 12"
+    },
+    {
+        "School": "Colorado State",
+        "Nickname": "Rams",
+        "City": "Fort Collins",
+        "State": "CO",
+        "Enrollment": "32,777",
+        "Conference": "Mountain West"
+    },
+    {
+        "School": "Duke",
+        "Nickname": "Blue Devils",
+        "City": "Durham",
+        "State": "NC",
+        "Enrollment": "17,620",
+        "Conference": "ACC"
+    },
+    {
+        "School": "East Carolina",
+        "Nickname": "Pirates",
+        "City": "Greenville",
+        "State": "NC",
+        "Enrollment": "28,021",
+        "Conference": "American"
+    },
+    {
+        "School": "Eastern Michigan",
+        "Nickname": "Eagles",
+        "City": "Ypsilanti",
+        "State": "MI",
+        "Enrollment": "15,370",
+        "Conference": "MAC"
+    },
+    {
+        "School": "Florida Atlantic",
+        "Nickname": "Owls",
+        "City": "Boca Raton",
+        "State": "FL",
+        "Enrollment": "30,155",
+        "Conference": "American"
+    },
+    {
+        "School": "FIU",
+        "Nickname": "Panthers",
+        "City": "Miami",
+        "State": "FL",
+        "Enrollment": "56,732",
+        "Conference": "CUSA"
+    },
+    {
+        "School": "Florida",
+        "Nickname": "Gators",
+        "City": "Gainesville",
+        "State": "FL",
+        "Enrollment": "55,781",
+        "Conference": "SEC"
+    },
+    {
+        "School": "Florida State",
+        "Nickname": "Seminoles",
+        "City": "Tallahassee",
+        "State": "FL",
+        "Enrollment": "45,130",
+        "Conference": "ACC"
+    },
+    {
+        "School": "Fresno State",
+        "Nickname": "Bulldogs",
+        "City": "Fresno",
+        "State": "CA",
+        "Enrollment": "24,585",
+        "Conference": "Mountain West"
+    },
+    {
+        "School": "Georgia",
+        "Nickname": "Bulldogs",
+        "City": "Athens",
+        "State": "GA",
+        "Enrollment": "40,118",
+        "Conference": "SEC"
+    },
+    {
+        "School": "Georgia Southern",
+        "Nickname": "Eagles",
+        "City": "Statesboro",
+        "State": "GA",
+        "Enrollment": "27,091",
+        "Conference": "Sun Belt"
+    },
+    {
+        "School": "Georgia State",
+        "Nickname": "Panthers",
+        "City": "Atlanta",
+        "State": "GA",
+        "Enrollment": "55,466",
+        "Conference": "Sun Belt"
+    },
+    {
+        "School": "Georgia Tech",
+        "Nickname": "Yellow Jackets",
+        "City": "Atlanta",
+        "State": "GA",
+        "Enrollment": "43,844",
+        "Conference": "ACC"
+    },
+    {
+        "School": "Hawaii",
+        "Nickname": "Rainbow Warriors",
+        "City": "Honolulu",
+        "State": "HI",
+        "Enrollment": "19,097",
+        "Conference": "Mountain West"
+    },
+    {
+        "School": "Houston",
+        "Nickname": "Cougars",
+        "City": "Houston",
+        "State": "TX",
+        "Enrollment": "47,031",
+        "Conference": "Big 12"
+    },
+    {
+        "School": "Illinois",
+        "Nickname": "Fighting Illini",
+        "City": "Urbana\u2013Champaign",
+        "State": "IL",
+        "Enrollment": "56,607",
+        "Conference": "Big Ten"
+    },
+    {
+        "School": "Indiana",
+        "Nickname": "Hoosiers",
+        "City": "Bloomington",
+        "State": "IN",
+        "Enrollment": "45,328",
+        "Conference": "Big Ten"
+    },
+    {
+        "School": "Iowa",
+        "Nickname": "Hawkeyes",
+        "City": "Iowa City",
+        "State": "IA",
+        "Enrollment": "29,909",
+        "Conference": "Big Ten"
+    },
+    {
+        "School": "Iowa State",
+        "Nickname": "Cyclones",
+        "City": "Ames",
+        "State": "IA",
+        "Enrollment": "30,708",
+        "Conference": "Big 12"
+    },
+    {
+        "School": "Jacksonville State",
+        "Nickname": "Gamecocks",
+        "City": "Jacksonville",
+        "State": "AL",
+        "Enrollment": "9,540",
+        "Conference": "CUSA"
+    },
+    {
+        "School": "James Madison",
+        "Nickname": "Dukes",
+        "City": "Harrisonburg",
+        "State": "VA",
+        "Enrollment": "22,224",
+        "Conference": "Sun Belt"
+    },
+    {
+        "School": "Kansas",
+        "Nickname": "Jayhawks",
+        "City": "Lawrence",
+        "State": "KS",
+        "Enrollment": "26,780",
+        "Conference": "Big 12"
+    },
+    {
+        "School": "Kansas State",
+        "Nickname": "Wildcats",
+        "City": "Manhattan",
+        "State": "KS",
+        "Enrollment": "20,229",
+        "Conference": "Big 12"
+    },
+    {
+        "School": "Kennesaw State",
+        "Nickname": "Owls",
+        "City": "Kennesaw",
+        "State": "GA",
+        "Enrollment": "45,152",
+        "Conference": "CUSA"
+    },
+    {
+        "School": "Kent State",
+        "Nickname": "Golden Flashes",
+        "City": "Kent",
+        "State": "OH",
+        "Enrollment": "26,597",
+        "Conference": "MAC"
+    },
+    {
+        "School": "Kentucky",
+        "Nickname": "Wildcats",
+        "City": "Lexington",
+        "State": "KY",
+        "Enrollment": "30,390",
+        "Conference": "SEC"
+    },
+    {
+        "School": "Liberty",
+        "Nickname": "Flames",
+        "City": "Lynchburg",
+        "State": "VA",
+        "Enrollment": "95,148",
+        "Conference": "CUSA"
+    },
+    {
+        "School": "Louisiana",
+        "Nickname": "Ragin' Cajuns",
+        "City": "Lafayette",
+        "State": "LA",
+        "Enrollment": "16,225",
+        "Conference": "Sun Belt"
+    },
+    {
+        "School": "Louisiana\u2013Monroe",
+        "Nickname": "Warhawks",
+        "City": "Monroe",
+        "State": "LA",
+        "Enrollment": "8,565",
+        "Conference": "Sun Belt"
+    },
+    {
+        "School": "Louisiana Tech",
+        "Nickname": "Bulldogs",
+        "City": "Ruston",
+        "State": "LA",
+        "Enrollment": "11,037",
+        "Conference": "CUSA"
+    },
+    {
+        "School": "Louisville",
+        "Nickname": "Cardinals",
+        "City": "Louisville",
+        "State": "KY",
+        "Enrollment": "22,140",
+        "Conference": "ACC"
+    },
+    {
+        "School": "LSU",
+        "Nickname": "Tigers",
+        "City": "Baton Rouge",
+        "State": "LA",
+        "Enrollment": "35,912",
+        "Conference": "SEC"
+    },
+    {
+        "School": "Marshall",
+        "Nickname": "Thundering Herd",
+        "City": "Huntington",
+        "State": "WV",
+        "Enrollment": "11,125",
+        "Conference": "Sun Belt"
+    },
+    {
+        "School": "Maryland",
+        "Nickname": "Terrapins",
+        "City": "College Park",
+        "State": "MD",
+        "Enrollment": "41,272",
+        "Conference": "Big Ten"
+    },
+    {
+        "School": "Memphis",
+        "Nickname": "Tigers",
+        "City": "Memphis",
+        "State": "TN",
+        "Enrollment": "21,622",
+        "Conference": "American"
+    },
+    {
+        "School": "Miami (FL)",
+        "Nickname": "Hurricanes",
+        "City": "Coral Gables",
+        "State": "FL",
+        "Enrollment": "19,096",
+        "Conference": "ACC"
+    },
+    {
+        "School": "Miami (OH)",
+        "Nickname": "RedHawks",
+        "City": "Oxford",
+        "State": "OH",
+        "Enrollment": "19,216",
+        "Conference": "MAC"
+    },
+    {
+        "School": "Michigan",
+        "Nickname": "Wolverines",
+        "City": "Ann Arbor",
+        "State": "MI",
+        "Enrollment": "50,278",
+        "Conference": "Big Ten"
+    },
+    {
+        "School": "Michigan State",
+        "Nickname": "Spartans",
+        "City": "East Lansing",
+        "State": "MI",
+        "Enrollment": "49,659",
+        "Conference": "Big Ten"
+    },
+    {
+        "School": "Middle Tennessee",
+        "Nickname": "Blue Raiders",
+        "City": "Murfreesboro",
+        "State": "TN",
+        "Enrollment": "20,857",
+        "Conference": "CUSA"
+    },
+    {
+        "School": "Minnesota",
+        "Nickname": "Golden Gophers",
+        "City": "Minneapolis",
+        "State": "MN",
+        "Enrollment": "52,376",
+        "Conference": "Big Ten"
+    },
+    {
+        "School": "Mississippi State",
+        "Nickname": "Bulldogs",
+        "City": "Mississippi State",
+        "State": "MS",
+        "Enrollment": "23,086",
+        "Conference": "SEC"
+    },
+    {
+        "School": "Missouri",
+        "Nickname": "Tigers",
+        "City": "Columbia",
+        "State": "MO",
+        "Enrollment": "31,412",
+        "Conference": "SEC"
+    },
+    {
+        "School": "Navy",
+        "Nickname": "Midshipmen",
+        "City": "Annapolis",
+        "State": "MD",
+        "Enrollment": "4,528",
+        "Conference": "American"
+    },
+    {
+        "School": "NC State",
+        "Nickname": "Wolfpack",
+        "City": "Raleigh",
+        "State": "NC",
+        "Enrollment": "36,831",
+        "Conference": "ACC"
+    },
+    {
+        "School": "Nebraska",
+        "Nickname": "Cornhuskers",
+        "City": "Lincoln",
+        "State": "NE",
+        "Enrollment": "24,431",
+        "Conference": "Big Ten"
+    },
+    {
+        "School": "Nevada",
+        "Nickname": "Wolf Pack",
+        "City": "Reno",
+        "State": "NV",
+        "Enrollment": "21,034",
+        "Conference": "Mountain West"
+    },
+    {
+        "School": "New Mexico",
+        "Nickname": "Lobos",
+        "City": "Albuquerque",
+        "State": "NM",
+        "Enrollment": "21,738",
+        "Conference": "Mountain West"
+    },
+    {
+        "School": "New Mexico State",
+        "Nickname": "Aggies",
+        "City": "Las Cruces",
+        "State": "NM",
+        "Enrollment": "13,904",
+        "Conference": "CUSA"
+    },
+    {
+        "School": "North Carolina",
+        "Nickname": "Tar Heels",
+        "City": "Chapel Hill",
+        "State": "NC",
+        "Enrollment": "31,733",
+        "Conference": "ACC"
+    },
+    {
+        "School": "North Texas",
+        "Nickname": "Mean Green",
+        "City": "Denton",
+        "State": "TX",
+        "Enrollment": "46,940",
+        "Conference": "American"
+    },
+    {
+        "School": "Northern Illinois",
+        "Nickname": "Huskies",
+        "City": "DeKalb",
+        "State": "IL",
+        "Enrollment": "16,234",
+        "Conference": "MAC"
+    },
+    {
+        "School": "Northwestern",
+        "Nickname": "Wildcats",
+        "City": "Evanston",
+        "State": "IL",
+        "Enrollment": "22,933",
+        "Conference": "Big Ten"
+    },
+    {
+        "School": "Notre Dame",
+        "Nickname": "Fighting Irish",
+        "City": "South Bend",
+        "State": "IN",
+        "Enrollment": "13,139",
+        "Conference": "Independent"
+    },
+    {
+        "School": "Ohio",
+        "Nickname": "Bobcats",
+        "City": "Athens",
+        "State": "OH",
+        "Enrollment": "24,429",
+        "Conference": "MAC"
+    },
+    {
+        "School": "Ohio State",
+        "Nickname": "Buckeyes",
+        "City": "Columbus",
+        "State": "OH",
+        "Enrollment": "61,677",
+        "Conference": "Big Ten"
+    },
+    {
+        "School": "Oklahoma",
+        "Nickname": "Sooners",
+        "City": "Norman",
+        "State": "OK",
+        "Enrollment": "28,042",
+        "Conference": "SEC"
+    },
+    {
+        "School": "Oklahoma State",
+        "Nickname": "Cowboys",
+        "City": "Stillwater",
+        "State": "OK",
+        "Enrollment": "24,660",
+        "Conference": "Big 12"
+    },
+    {
+        "School": "Old Dominion",
+        "Nickname": "Monarchs",
+        "City": "Norfolk",
+        "State": "VA",
+        "Enrollment": "23,494",
+        "Conference": "Sun Belt"
+    },
+    {
+        "School": "Ole Miss",
+        "Nickname": "Rebels",
+        "City": "University",
+        "State": "MS",
+        "Enrollment": "21,203",
+        "Conference": "SEC"
+    },
+    {
+        "School": "Oregon",
+        "Nickname": "Ducks",
+        "City": "Eugene",
+        "State": "OR",
+        "Enrollment": "22,257",
+        "Conference": "Big Ten"
+    },
+    {
+        "School": "Oregon State",
+        "Nickname": "Beavers",
+        "City": "Corvallis",
+        "State": "OR",
+        "Enrollment": "33,193",
+        "Conference": "Pac-12"
+    },
+    {
+        "School": "Penn State",
+        "Nickname": "Nittany Lions",
+        "City": "University Park",
+        "State": "PA",
+        "Enrollment": "47,560",
+        "Conference": "Big Ten"
+    },
+    {
+        "School": "Pittsburgh",
+        "Nickname": "Panthers",
+        "City": "Pittsburgh",
+        "State": "PA",
+        "Enrollment": "29,238",
+        "Conference": "ACC"
+    },
+    {
+        "School": "Purdue",
+        "Nickname": "Boilermakers",
+        "City": "West Lafayette",
+        "State": "IN",
+        "Enrollment": "49,639",
+        "Conference": "Big Ten"
+    },
+    {
+        "School": "Rice",
+        "Nickname": "Owls",
+        "City": "Houston",
+        "State": "TX",
+        "Enrollment": "8,285",
+        "Conference": "American"
+    },
+    {
+        "School": "Rutgers",
+        "Nickname": "Scarlet Knights",
+        "City": "Piscataway",
+        "State": "NJ",
+        "Enrollment": "50,804",
+        "Conference": "Big Ten"
+    },
+    {
+        "School": "Sam Houston",
+        "Nickname": "Bearkats",
+        "City": "Huntsville",
+        "State": "TX",
+        "Enrollment": "21,679",
+        "Conference": "CUSA"
+    },
+    {
+        "School": "San Diego State",
+        "Nickname": "Aztecs",
+        "City": "San Diego",
+        "State": "CA",
+        "Enrollment": "35,732",
+        "Conference": "Mountain West"
+    },
+    {
+        "School": "San Jose State",
+        "Nickname": "Spartans",
+        "City": "San Jose",
+        "State": "CA",
+        "Enrollment": "37,133",
+        "Conference": "Mountain West"
+    },
+    {
+        "School": "SMU",
+        "Nickname": "Mustangs",
+        "City": "Dallas",
+        "State": "TX",
+        "Enrollment": "12,385",
+        "Conference": "ACC"
+    },
+    {
+        "School": "South Alabama",
+        "Nickname": "Jaguars",
+        "City": "Mobile",
+        "State": "AL",
+        "Enrollment": "13,992",
+        "Conference": "Sun Belt"
+    },
+    {
+        "School": "South Carolina",
+        "Nickname": "Gamecocks",
+        "City": "Columbia",
+        "State": "SC",
+        "Enrollment": "35,471",
+        "Conference": "SEC"
+    },
+    {
+        "School": "South Florida",
+        "Nickname": "Bulls",
+        "City": "Tampa",
+        "State": "FL",
+        "Enrollment": "44,322",
+        "Conference": "American"
+    },
+    {
+        "School": "Southern Miss",
+        "Nickname": "Golden Eagles",
+        "City": "Hattiesburg",
+        "State": "MS",
+        "Enrollment": "14,146",
+        "Conference": "Sun Belt"
+    },
+    {
+        "School": "Stanford",
+        "Nickname": "Cardinal",
+        "City": "Stanford",
+        "State": "CA",
+        "Enrollment": "17,680",
+        "Conference": "ACC"
+    },
+    {
+        "School": "Syracuse",
+        "Nickname": "Orange",
+        "City": "Syracuse",
+        "State": "NY",
+        "Enrollment": "21,772",
+        "Conference": "ACC"
+    },
+    {
+        "School": "TCU",
+        "Nickname": "Horned Frogs",
+        "City": "Fort Worth",
+        "State": "TX",
+        "Enrollment": "11,938",
+        "Conference": "Big 12"
+    },
+    {
+        "School": "Temple",
+        "Nickname": "Owls",
+        "City": "Philadelphia",
+        "State": "PA",
+        "Enrollment": "35,626",
+        "Conference": "American"
+    },
+    {
+        "School": "Tennessee",
+        "Nickname": "Volunteers",
+        "City": "Knoxville",
+        "State": "TN",
+        "Enrollment": "31,701",
+        "Conference": "SEC"
+    },
+    {
+        "School": "Texas",
+        "Nickname": "Longhorns",
+        "City": "Austin",
+        "State": "TX",
+        "Enrollment": "51,991",
+        "Conference": "SEC"
+    },
+    {
+        "School": "Texas A&M",
+        "Nickname": "Aggies",
+        "City": "College Station",
+        "State": "TX",
+        "Enrollment": "72,530",
+        "Conference": "SEC"
+    },
+    {
+        "School": "Texas State",
+        "Nickname": "Bobcats",
+        "City": "San Marcos",
+        "State": "TX",
+        "Enrollment": "37,864",
+        "Conference": "Sun Belt"
+    },
+    {
+        "School": "Texas Tech",
+        "Nickname": "Red Raiders",
+        "City": "Lubbock",
+        "State": "TX",
+        "Enrollment": "40,542",
+        "Conference": "Big 12"
+    },
+    {
+        "School": "Toledo",
+        "Nickname": "Rockets",
+        "City": "Toledo",
+        "State": "OH",
+        "Enrollment": "17,045",
+        "Conference": "MAC"
+    },
+    {
+        "School": "Troy",
+        "Nickname": "Trojans",
+        "City": "Troy",
+        "State": "AL",
+        "Enrollment": "14,901",
+        "Conference": "Sun Belt"
+    },
+    {
+        "School": "Tulane",
+        "Nickname": "Green Wave",
+        "City": "New Orleans",
+        "State": "LA",
+        "Enrollment": "13,127",
+        "Conference": "American"
+    },
+    {
+        "School": "Tulsa",
+        "Nickname": "Golden Hurricane",
+        "City": "Tulsa",
+        "State": "OK",
+        "Enrollment": "3,832",
+        "Conference": "American"
+    },
+    {
+        "School": "UAB",
+        "Nickname": "Blazers",
+        "City": "Birmingham",
+        "State": "AL",
+        "Enrollment": "22,289",
+        "Conference": "American"
+    },
+    {
+        "School": "UCF",
+        "Nickname": "Knights",
+        "City": "Orlando",
+        "State": "FL",
+        "Enrollment": "70,406",
+        "Conference": "Big 12"
+    },
+    {
+        "School": "UCLA",
+        "Nickname": "Bruins",
+        "City": "Los Angeles",
+        "State": "CA",
+        "Enrollment": "47,516",
+        "Conference": "Big Ten"
+    },
+    {
+        "School": "UConn",
+        "Nickname": "Huskies",
+        "City": "Storrs",
+        "State": "CT",
+        "Enrollment": "32,146",
+        "Conference": "Independent"
+    },
+    {
+        "School": "UMass",
+        "Nickname": "Minutemen",
+        "City": "Amherst",
+        "State": "MA",
+        "Enrollment": "32,045",
+        "Conference": "Independent"
+    },
+    {
+        "School": "UNLV",
+        "Nickname": "Rebels",
+        "City": "Las Vegas",
+        "State": "NV",
+        "Enrollment": "30,679",
+        "Conference": "Mountain West"
+    },
+    {
+        "School": "USC",
+        "Nickname": "Trojans",
+        "City": "Los Angeles",
+        "State": "CA",
+        "Enrollment": "49,318",
+        "Conference": "Big Ten"
+    },
+    {
+        "School": "UTEP",
+        "Nickname": "Miners",
+        "City": "El Paso",
+        "State": "TX",
+        "Enrollment": "24,003",
+        "Conference": "CUSA"
+    },
+    {
+        "School": "UTSA",
+        "Nickname": "Roadrunners",
+        "City": "San Antonio",
+        "State": "TX",
+        "Enrollment": "34,734",
+        "Conference": "American"
+    },
+    {
+        "School": "Utah",
+        "Nickname": "Utes",
+        "City": "Salt Lake City",
+        "State": "UT",
+        "Enrollment": "34,464",
+        "Conference": "Big 12"
+    },
+    {
+        "School": "Utah State",
+        "Nickname": "Aggies",
+        "City": "Logan",
+        "State": "UT",
+        "Enrollment": "27,426",
+        "Conference": "Mountain West"
+    },
+    {
+        "School": "Vanderbilt",
+        "Nickname": "Commodores",
+        "City": "Nashville",
+        "State": "TN",
+        "Enrollment": "13,796",
+        "Conference": "SEC"
+    },
+    {
+        "School": "Virginia",
+        "Nickname": "Cavaliers",
+        "City": "Charlottesville",
+        "State": "VA",
+        "Enrollment": "26,026",
+        "Conference": "ACC"
+    },
+    {
+        "School": "Virginia Tech",
+        "Nickname": "Hokies",
+        "City": "Blacksburg",
+        "State": "VA",
+        "Enrollment": "37,279",
+        "Conference": "ACC"
+    },
+    {
+        "School": "Wake Forest",
+        "Nickname": "Demon Deacons",
+        "City": "Winston-Salem",
+        "State": "NC",
+        "Enrollment": "8,947",
+        "Conference": "ACC"
+    },
+    {
+        "School": "Washington",
+        "Nickname": "Huskies",
+        "City": "Seattle",
+        "State": "WA",
+        "Enrollment": "52,439",
+        "Conference": "Big Ten"
+    },
+    {
+        "School": "Washington State",
+        "Nickname": "Cougars",
+        "City": "Pullman",
+        "State": "WA",
+        "Enrollment": "29,843",
+        "Conference": "Pac-12"
+    },
+    {
+        "School": "West Virginia",
+        "Nickname": "Mountaineers",
+        "City": "Morgantown",
+        "State": "WV",
+        "Enrollment": "25,474",
+        "Conference": "Big 12"
+    },
+    {
+        "School": "Western Kentucky",
+        "Nickname": "Hilltoppers",
+        "City": "Bowling Green",
+        "State": "KY",
+        "Enrollment": "16,750",
+        "Conference": "CUSA"
+    },
+    {
+        "School": "Western Michigan",
+        "Nickname": "Broncos",
+        "City": "Kalamazoo",
+        "State": "MI",
+        "Enrollment": "19,038",
+        "Conference": "MAC"
+    },
+    {
+        "School": "Wisconsin",
+        "Nickname": "Badgers",
+        "City": "Madison",
+        "State": "WI",
+        "Enrollment": "47,932",
+        "Conference": "Big Ten"
+    },
+    {
+        "School": "Wyoming",
+        "Nickname": "Cowboys",
+        "City": "Laramie",
+        "State": "WY",
+        "Enrollment": "11,479",
+        "Conference": "Mountain West"
+    }
+]

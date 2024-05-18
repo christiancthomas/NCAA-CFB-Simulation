@@ -1,7 +1,7 @@
 class GameClock:
     def __init__(self):
         self.quarter = 1
-        self.minutes = 1
+        self.minutes = 15
         self.seconds = 0
         self.running = True
         self.halftime = False
@@ -18,7 +18,7 @@ class GameClock:
         if self.minutes < 0:
             self.quarter += 1
             if self.quarter == 3:  # Indicates halftime
-                self.minutes = 1
+                self.minutes = 15
                 self.seconds = 0
                 self.running = True
                 self.halftime = True
@@ -27,7 +27,7 @@ class GameClock:
                 self.seconds = 0
                 self.running = False
             else:  # Transition between quarters
-                self.minutes = 1
+                self.minutes = 15
                 self.seconds = 0
 
     def stop(self):
@@ -45,7 +45,7 @@ class GameClock:
     def end_halftime(self):
         self.halftime = False
         self.quarter = 3
-        self.minutes = 1
+        self.minutes = 15
         self.seconds = 0
         self.running = True
 

@@ -32,7 +32,7 @@ class Game:
         else:
             self.current_defense = self.home
             self.defend = self.home
-        print(f'{self.receive.name} has won the coin toss and has elected to receive the ball in the first half. {self.current_defense.name} will receive the ball first in the second half.')
+        # print(f'{self.receive.name} has won the coin toss and has elected to receive the ball in the first half. {self.current_defense.name} will receive the ball first in the second half.')
         return self
 
     def kick(self):
@@ -56,7 +56,7 @@ class Game:
                 self.yards_to_go = 10
             self.state = 'down'
             self.opening = False
-            print(f'{self.ordinal(self.down)} and {self.yards_to_go} on the {self.ball_pos} yard line for {self.current_offense.name}.')
+            # print(f'{self.ordinal(self.down)} and {self.yards_to_go} on the {self.ball_pos} yard line for {self.current_offense.name}.')
 
         if self.state == 'pat':
             if self.current_offense == self.home:
@@ -67,7 +67,7 @@ class Game:
                 self.ball_pos_raw = 2
                 self.down = 'PAT'
                 self.yards_to_go = 2
-            print(f'{self.ordinal(self.down)} and {self.yards_to_go} on the {self.ball_pos} yard line for {self.current_offense.name}.')
+            # print(f'{self.ordinal(self.down)} and {self.yards_to_go} on the {self.ball_pos} yard line for {self.current_offense.name}.')
 
         if self.state == 'halftime':
             self.current_offense = self.defend
@@ -83,7 +83,7 @@ class Game:
                 self.down = 1
                 self.yards_to_go = 10
             self.state = 'down'
-            print(f'{self.ordinal(self.down)} and {self.yards_to_go} on the {self.ball_pos} yard line for {self.current_offense.name}.')
+            # print(f'{self.ordinal(self.down)} and {self.yards_to_go} on the {self.ball_pos} yard line for {self.current_offense.name}.')
 
     def ordinal(self, down):
         ord_dict = {1: '1st', 2: '2nd', 3: '3rd', 4: '4th', 'PAT': 'PAT'}
@@ -98,21 +98,21 @@ class Game:
         if self.state == 'pat' and self.current_offense == self.home:
             if self.ball_pos_raw >= 100:
                 self.home_score += 2
-                print(f'2 point conversion is successful!\nScore: {self.home.name}: {self.home_score} - {self.away.name}: {self.away_score}')
-            else:
-                print(f'2 point conversion is unsuccessful.\nScore: {self.home.name}: {self.home_score} - {self.away.name}: {self.away_score}')
+                # print(f'2 point conversion is successful!\nScore: {self.home.name}: {self.home_score} - {self.away.name}: {self.away_score}')
+            # else:
+                # print(f'2 point conversion is unsuccessful.\nScore: {self.home.name}: {self.home_score} - {self.away.name}: {self.away_score}')
             self.state = 'kickoff'
         elif self.state == 'pat' and self.current_offense == self.away:
             if self.ball_pos_raw <= 0:
                 self.away_score += 2
-                print(f'2 point conversion is successful!\nScore: {self.home.name}: {self.home_score} - {self.away.name}: {self.away_score}')
-            else:
-                print(f'2 point conversion is unsuccessful.\nScore: {self.home.name}: {self.home_score} - {self.away.name}: {self.away_score}')
+                # print(f'2 point conversion is successful!\nScore: {self.home.name}: {self.home_score} - {self.away.name}: {self.away_score}')
+            # else:
+                # print(f'2 point conversion is unsuccessful.\nScore: {self.home.name}: {self.home_score} - {self.away.name}: {self.away_score}')
             self.state = 'kickoff'
 
         elif self.state == 'down' and self.ball_pos_raw >= 100 and isinstance(self.down, int):
             self.home_score += 6
-            print(f'TOUCHDOWN {self.current_offense.name}! Score: {self.home.name}: {self.home_score} - {self.away.name}: {self.away_score}')
+            # print(f'TOUCHDOWN {self.current_offense.name}! Score: {self.home.name}: {self.home_score} - {self.away.name}: {self.away_score}')
             self.ball_pos_raw = 98
             self.ball_pos = 2
             self.down = 'PAT'
@@ -120,7 +120,7 @@ class Game:
             self.clock.stop()  # Stop clock for touchdown
         elif self.state == 'down' and self.ball_pos_raw <= 0 and isinstance(self.down, int):
             self.away_score += 6
-            print(f'TOUCHDOWN {self.current_offense.name}! Score: {self.home.name}: {self.home_score} - {self.away.name}: {self.away_score}')
+            # print(f'TOUCHDOWN {self.current_offense.name}! Score: {self.home.name}: {self.home_score} - {self.away.name}: {self.away_score}')
             self.ball_pos_raw = 2
             self.ball_pos = 2
             self.down = 'PAT'
@@ -130,7 +130,7 @@ class Game:
         return self
 
     def turnover(self):
-        print(f'{self.current_offense.name} has turned the ball over on downs.')
+        # print(f'{self.current_offense.name} has turned the ball over on downs.')
         if self.current_defense == self.away:
             self.current_offense = self.away
             self.current_defense = self.home
@@ -158,8 +158,8 @@ class Game:
         if self.yards_to_go <= 0:
             self.down = 1
             self.yards_to_go = 10
-            if self.state == 'down':
-                print('First down!')
+            # if self.state == 'down':
+                # print('First down!')
         elif self.yards_to_go > 0 and self.down == 4:
             self.turnover()
             self.down = 1
@@ -172,13 +172,12 @@ class Game:
 
     def simulate_play(self, play_type):
         if self.clock.is_game_over():
-            print("The game is over.")
             return
 
         if self.clock.halftime:
-            print("Halftime!")
+            # print("Halftime!")
             self.clock.end_halftime()
-            print("Starting the second half!")
+            # print("Starting the second half!")
             self.state = 'halftime'
             self.set_ball()
 
@@ -194,24 +193,24 @@ class Game:
         if play_success:
             yards_gained = random.randint(1, 20)
             self.calc_ball_pos(yards_gained)
-            print(f"The {play_type} play was successful! Gained {yards_gained} yards.")
+            # print(f"The {play_type} play was successful! Gained {yards_gained} yards.")
         else:
             yards_gained = 0
-            print(f"The {play_type} play failed. No yards gained.")
+            # print(f"The {play_type} play failed. No yards gained.")
             if play_type == "pass":
                 self.clock.stop()  # Stop clock for incomplete pass
 
         self.calc_down(yards_gained)
         self.score()
-        if isinstance(self.down, int):
-            print(f'{self.ordinal(self.down)} and {self.yards_to_go} on the {self.ball_pos} yard line for {self.current_offense.name}.')
-        else:
-            print(f'PAT for {self.current_offense.name}')
+        # if isinstance(self.down, int):
+            # print(f'{self.ordinal(self.down)} and {self.yards_to_go} on the {self.ball_pos} yard line for {self.current_offense.name}.')
+        # else:
+            # print(f'PAT for {self.current_offense.name}')
 
         if not self.clock.is_game_over() and not self.clock.halftime:
             if play_success and self.state == 'down':
                 self.clock.tick(random.randint(10, 20))  # Tick clock for time between plays
-            print(f"Time remaining: {self.clock}")
+            # print(f"Time remaining: {self.clock}")
 
     def start_game(self):
         self.home.display_team()
@@ -222,9 +221,9 @@ class Game:
 
         while not self.clock.is_game_over():
             if self.clock.halftime:
-                print("Halftime!")
+                # print("Halftime!")
                 self.clock.end_halftime()
-                print("Starting the second half!")
+                # print("Starting the second half!")
                 self.state = 'halftime'
                 self.set_ball()
                 continue
@@ -236,7 +235,7 @@ class Game:
             #     self.simulate_play(random.choice(['run', 'pass']))
                 # print("Invalid play type. Please choose 'r' or 'p'.")
 
-        print("The game is over.")
+        # print("The game is over.")
         if self.home_score > self.away_score:
             self.winner = self.home
             self.loser = self.away
