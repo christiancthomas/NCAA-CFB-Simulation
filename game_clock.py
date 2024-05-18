@@ -17,10 +17,11 @@ class GameClock:
 
         if self.minutes < 0:
             self.quarter += 1
-            if self.quarter == 3:  # Halftime ends
+            if self.quarter == 3:  # Indicates halftime
                 self.minutes = 1
                 self.seconds = 0
                 self.running = True
+                self.halftime = True
             elif self.quarter > 4:  # End of game
                 self.minutes = 0
                 self.seconds = 0
@@ -38,8 +39,8 @@ class GameClock:
     def is_game_over(self):
         return self.quarter > 4
 
-    def is_halftime(self):
-        return self.quarter == 2 and self.minutes == 0 and self.seconds == 0
+    # def is_halftime(self):
+    #     return self.quarter == 2 and self.minutes == 0 and self.seconds == 0
 
     def end_halftime(self):
         self.halftime = False
