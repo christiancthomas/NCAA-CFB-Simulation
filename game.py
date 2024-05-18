@@ -3,7 +3,7 @@ from team import Team
 from game_clock import GameClock
 
 class Game:
-    def __init__(self, home_name, away_name):
+    def __init__(self, home_name, away_name, playoff=False):
         self.home = Team(home_name)
         self.away = Team(away_name)
         self.home_score = 0
@@ -22,6 +22,43 @@ class Game:
         self.receive = None
         self.defend = None
         self.opening = True
+        self.playoff = playoff
+        self.overtime = False
+        self.overtime_round = 0
+        self.complete_round = False
+
+    def overtime(self):
+        self.overtime, self.clock.overtime = True
+        self.clock.overtime_clock()
+        self.state = 'overtime'
+        print("Overtime begins!")
+        self.coin_toss()
+        self.overtime_round +=1
+        # Top of round
+        while self.overtime and self.home_score == self.away_score:
+            # run overtime loop:
+            # 1. both teams get a chance to posess the ball, starting at the opponent's 25 yard line
+            # 2. at the end of each OT period, we should check score -- if it's tied, we keep going, otherwise, OT ends
+            # 3. no clock
+            # 4. 1st OT: you just have to score a TD
+            # 5. 2nd OT: you have to score a TD and attempt a 2 pt conversion
+            # 6. 3rd OT+: 2 pt conversions only until a winner is found
+            while self.overtime and self.overtime_round and not self.complete_round:
+                match self.overtime_round:
+                    case 1:
+                        # offense gets ball first
+                        self.simulate_play(random.choice(['run', 'pass']))
+                        # defense the gets ball
+                        # check score
+                        ...
+                    case 2:
+                        ...
+                    case _ if self.overtime_round >= 3:
+                        ...
+
+
+        self.overtime_round += 1
+
 
     def coin_toss(self):
         self.receive = random.choice([self.home, self.away])
@@ -85,6 +122,13 @@ class Game:
             self.state = 'down'
             # print(f'{self.ordinal(self.down)} and {self.yards_to_go} on the {self.ball_pos} yard line for {self.current_offense.name}.')
 
+        if self.state == 'overtime':
+            self.ball_pos = 25 # Set ball at the 25-yard line of the opponent
+            if self.current_offense == self.home:
+                self.ball_pos_raw = 75
+            else:
+                self.ball_pos_raw = 25
+
     def ordinal(self, down):
         ord_dict = {1: '1st', 2: '2nd', 3: '3rd', 4: '4th', 'PAT': 'PAT'}
         return ord_dict[down]
@@ -102,6 +146,11 @@ class Game:
             # else:
                 # print(f'2 point conversion is unsuccessful.\nScore: {self.home.name}: {self.home_score} - {self.away.name}: {self.away_score}')
             self.state = 'kickoff'
+            if self.overtime:
+                self.state = 'overtime'
+                self.current_offense, self.current_defense = self.current_defense, self.current_offense
+                return self
+
         elif self.state == 'pat' and self.current_offense == self.away:
             if self.ball_pos_raw <= 0:
                 self.away_score += 2
@@ -109,6 +158,10 @@ class Game:
             # else:
                 # print(f'2 point conversion is unsuccessful.\nScore: {self.home.name}: {self.home_score} - {self.away.name}: {self.away_score}')
             self.state = 'kickoff'
+            if self.overtime:
+                self.state = 'overtime'
+                self.current_offense, self.current_defense = self.current_defense, self.current_offense
+                return self
 
         elif self.state == 'down' and self.ball_pos_raw >= 100 and isinstance(self.down, int):
             self.home_score += 6
@@ -126,6 +179,16 @@ class Game:
             self.down = 'PAT'
             self.state = 'pat'
             self.clock.stop()  # Stop clock for touchdown
+        elif self.state == 'overtime' and self.ball_pos_raw >= 100 and isinstance(self.down, int):
+            if self.overtime_round == 1:
+                self.home_score += 6
+                self.state = 'PAT'
+                self.down = 'pat'
+            elif self.overtime_round == 2:
+                self.ball_pos_raw = 98
+                self.ball_pos = 2
+        # if self.overtime:
+        #     self.state = 'overtime'
         self.set_ball()
         return self
 
@@ -171,7 +234,10 @@ class Game:
         return self
 
     def simulate_play(self, play_type):
-        if self.clock.is_game_over():
+        if self.clock.is_game_over() and not self.playoff:
+            return
+        if self.clock.is_game_over() and self.playoff and self.home_score == self.away_score and not self.overtime: # enter overtime
+            self.overtime()
             return
 
         if self.clock.halftime:
@@ -197,7 +263,7 @@ class Game:
         else:
             yards_gained = 0
             # print(f"The {play_type} play failed. No yards gained.")
-            if play_type == "pass":
+            if play_type == "pass" and not self.overtime:
                 self.clock.stop()  # Stop clock for incomplete pass
 
         self.calc_down(yards_gained)
@@ -207,19 +273,19 @@ class Game:
         # else:
             # print(f'PAT for {self.current_offense.name}')
 
-        if not self.clock.is_game_over() and not self.clock.halftime:
+        if not self.clock.is_game_over() and not self.clock.halftime and not self.clock.overtime:
             if play_success and self.state == 'down':
                 self.clock.tick(random.randint(10, 20))  # Tick clock for time between plays
             # print(f"Time remaining: {self.clock}")
 
     def start_game(self):
-        self.home.display_team()
-        self.away.display_team()
+        # self.home.display_team()
+        # self.away.display_team()
         self.coin_toss()
         self.state = 'kickoff'
         self.set_ball()
 
-        while not self.clock.is_game_over():
+        while not self.clock.is_game_over() and not self.overtime:
             if self.clock.halftime:
                 # print("Halftime!")
                 self.clock.end_halftime()

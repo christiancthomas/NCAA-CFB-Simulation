@@ -1,4 +1,5 @@
 import unittest
+import random
 from player import Player
 from team import Team
 from game import Game
@@ -89,6 +90,36 @@ class TestGame(unittest.TestCase):
         initial_position = self.game.ball_pos_raw
         self.game.simulate_play("pass")
         self.assertNotEqual(self.game.ball_pos_raw, initial_position)
+
+class TestPlayoffOvertime(unittest.TestCase):
+    def test_playoff_overtime(self):
+        home_team = Team("Home Team", "Home Nickname")
+        away_team = Team("Away Team", "Away Nickname")
+
+        # Create a game with playoff set to True
+        game = Game(home_team.name, away_team.name, playoff=True)
+
+        # Simulate the end of the fourth quarter with a tied score
+        game.home_score = 24
+        game.away_score = 24
+        game.clock.quarter = 4
+        game.clock.minutes = 0
+        game.clock.seconds = 0
+
+        # Ensure the game does not end if it's a playoff game and the score is tied
+        game.simulate_play(random.choice(['run', 'pass']))  # Try to end the game
+
+        # Check that the game has gone into overtime
+        self.assertIsNone(game.winner, "The game should not have a winner yet.")
+
+        # Simulate overtime until a winner is found
+        while game.winner is None:
+            game.simulate_play(random.choice(['run', 'pass']))
+
+        # Check that the game now has a winner
+        self.assertIsNotNone(game.winner, "The game should have a winner after overtime.")
+
+        print(f"The winner is: {game.winner.name}")
 
 if __name__ == "__main__":
     unittest.main()
