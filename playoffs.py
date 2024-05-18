@@ -13,7 +13,7 @@ class Playoffs:
         ]
 
     def play_game(self, home_team, away_team):
-        game = Game(home_team.name, away_team.name)
+        game = Game(home_team.name, away_team.name, playoff=True)
         game.start_game()
         return game.winner
 

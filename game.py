@@ -27,8 +27,7 @@ class Game:
         self.overtime_round = 0
         self.complete_round = False
 
-    def overtime(self):
-        self.overtime, self.clock.overtime = True
+    def play_ot(self):
         self.clock.overtime_clock()
         self.state = 'overtime'
         print("Overtime begins!")
@@ -43,18 +42,21 @@ class Game:
             # 4. 1st OT: you just have to score a TD
             # 5. 2nd OT: you have to score a TD and attempt a 2 pt conversion
             # 6. 3rd OT+: 2 pt conversions only until a winner is found
-            while self.overtime and self.overtime_round and not self.complete_round:
-                match self.overtime_round:
-                    case 1:
+            # while self.overtime and self.overtime_round and not self.complete_round:
+            ball_first, ball_second = self.receive, self.defend
+            match self.overtime_round:
+                case 1:
+                    while self.current_offense == ball_first:
                         # offense gets ball first
                         self.simulate_play(random.choice(['run', 'pass']))
-                        # defense the gets ball
-                        # check score
-                        ...
-                    case 2:
-                        ...
-                    case _ if self.overtime_round >= 3:
-                        ...
+                    # defense the gets ball
+                    while self.current_offense == ball_second:
+                        self.simulate_play(random.choice(['run', 'pass']))
+                    # check score
+                case 2:
+                    ...
+                case _ if self.overtime_round >= 3:
+                    ...
 
 
         self.overtime_round += 1
@@ -179,7 +181,8 @@ class Game:
             self.down = 'PAT'
             self.state = 'pat'
             self.clock.stop()  # Stop clock for touchdown
-        elif self.state == 'overtime' and self.ball_pos_raw >= 100 and isinstance(self.down, int):
+        self.set_ball()
+        if self.state == 'overtime' and self.ball_pos_raw >= 100 and isinstance(self.down, int):
             if self.overtime_round == 1:
                 self.home_score += 6
                 self.state = 'PAT'
@@ -187,19 +190,22 @@ class Game:
             elif self.overtime_round == 2:
                 self.ball_pos_raw = 98
                 self.ball_pos = 2
+        elif self.state == 'overtime' and self.ball_pos_raw <= 0 and isinstance(self.down, int):
+            if self.overtime_round == 1:
+                self.away_score += 6
+                self.state = 'PAT'
+                self.down = 'pat'
+            elif self.overtime_round == 2:
+                self.ball_pos_raw = 2
+                self.ball_pos = 2
         # if self.overtime:
         #     self.state = 'overtime'
-        self.set_ball()
+            self.set_ball()
         return self
 
     def turnover(self):
         # print(f'{self.current_offense.name} has turned the ball over on downs.')
-        if self.current_defense == self.away:
-            self.current_offense = self.away
-            self.current_defense = self.home
-        else:
-            self.current_offense = self.home
-            self.current_defense = self.away
+        self.current_offense, self.current_defense = self.current_defense, self.current_offense
         return self
 
     def calc_ball_pos(self, yards_gained):
@@ -235,9 +241,6 @@ class Game:
 
     def simulate_play(self, play_type):
         if self.clock.is_game_over() and not self.playoff:
-            return
-        if self.clock.is_game_over() and self.playoff and self.home_score == self.away_score and not self.overtime: # enter overtime
-            self.overtime()
             return
 
         if self.clock.halftime:
@@ -277,6 +280,12 @@ class Game:
             if play_success and self.state == 'down':
                 self.clock.tick(random.randint(10, 20))  # Tick clock for time between plays
             # print(f"Time remaining: {self.clock}")
+        # OT check
+        if self.clock.is_game_over() and self.playoff and self.home_score == self.away_score and self.overtime_round == 0:
+            # enter OT
+            self.overtime = True
+            self.clock.overtime = True
+            self.play_ot()
 
     def start_game(self):
         # self.home.display_team()

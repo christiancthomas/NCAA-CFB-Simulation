@@ -1,9 +1,6 @@
 from team_loader import load_teams_from_json
 from season import Season
 from playoffs import Playoffs
-# clean terminal for fresh
-import os
-os.system('cls' if os.name == 'nt' else 'clear')
 # Load teams from JSON file
 teams = load_teams_from_json('cfb.json')
 

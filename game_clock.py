@@ -58,7 +58,7 @@ class GameClock:
         self.running = True
 
     def overtime_clock(self):
-        self.overtime = True
+        # self.overtime = True
         self.quarter = 'OT'
         self.minutes = 0
         self.seconds = 0
