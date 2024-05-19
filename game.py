@@ -29,9 +29,11 @@ class Game:
 
     def play_ot(self):
         self.clock.overtime_clock()
+        self.coin_toss()
+        self.state = 'ot-reset'
+        self.set_ball()
         self.state = 'overtime'
         print("Overtime begins!")
-        self.coin_toss()
         self.overtime_round +=1
         # Top of round
         while self.overtime and self.home_score == self.away_score:
@@ -52,14 +54,21 @@ class Game:
                     # defense the gets ball
                     while self.current_offense == ball_second:
                         self.simulate_play(random.choice(['run', 'pass']))
-                    # check score
                 case 2:
-                    ...
+                    while self.current_offense == ball_first:
+                        # offense gets ball first
+                        self.simulate_play(random.choice(['run', 'pass']))
+                    # defense the gets ball
+                    while self.current_offense == ball_second:
+                        self.simulate_play(random.choice(['run', 'pass']))
                 case _ if self.overtime_round >= 3:
-                    ...
-
-
-        self.overtime_round += 1
+                    while self.current_offense == ball_first:
+                        # offense gets ball first
+                        self.simulate_play(random.choice(['run', 'pass']))
+                    # defense the gets ball
+                    while self.current_offense == ball_second:
+                        self.simulate_play(random.choice(['run', 'pass']))
+            self.overtime_round += 1
 
 
     def coin_toss(self):
@@ -93,7 +102,10 @@ class Game:
                 self.ball_pos = 25
                 self.down = 1
                 self.yards_to_go = 10
-            self.state = 'down'
+            if self.overtime:
+                self.state = 'overtime'
+            else:
+                self.state = 'down'
             self.opening = False
             # print(f'{self.ordinal(self.down)} and {self.yards_to_go} on the {self.ball_pos} yard line for {self.current_offense.name}.')
 
@@ -124,12 +136,15 @@ class Game:
             self.state = 'down'
             # print(f'{self.ordinal(self.down)} and {self.yards_to_go} on the {self.ball_pos} yard line for {self.current_offense.name}.')
 
-        if self.state == 'overtime':
+        if self.state == 'ot-reset':
             self.ball_pos = 25 # Set ball at the 25-yard line of the opponent
             if self.current_offense == self.home:
                 self.ball_pos_raw = 75
             else:
                 self.ball_pos_raw = 25
+            self.state = 'overtime'
+            self.down = 1
+        return self
 
     def ordinal(self, down):
         ord_dict = {1: '1st', 2: '2nd', 3: '3rd', 4: '4th', 'PAT': 'PAT'}
@@ -148,11 +163,6 @@ class Game:
             # else:
                 # print(f'2 point conversion is unsuccessful.\nScore: {self.home.name}: {self.home_score} - {self.away.name}: {self.away_score}')
             self.state = 'kickoff'
-            if self.overtime:
-                self.state = 'overtime'
-                self.current_offense, self.current_defense = self.current_defense, self.current_offense
-                return self
-
         elif self.state == 'pat' and self.current_offense == self.away:
             if self.ball_pos_raw <= 0:
                 self.away_score += 2
@@ -160,11 +170,6 @@ class Game:
             # else:
                 # print(f'2 point conversion is unsuccessful.\nScore: {self.home.name}: {self.home_score} - {self.away.name}: {self.away_score}')
             self.state = 'kickoff'
-            if self.overtime:
-                self.state = 'overtime'
-                self.current_offense, self.current_defense = self.current_defense, self.current_offense
-                return self
-
         elif self.state == 'down' and self.ball_pos_raw >= 100 and isinstance(self.down, int):
             self.home_score += 6
             # print(f'TOUCHDOWN {self.current_offense.name}! Score: {self.home.name}: {self.home_score} - {self.away.name}: {self.away_score}')
@@ -181,31 +186,32 @@ class Game:
             self.down = 'PAT'
             self.state = 'pat'
             self.clock.stop()  # Stop clock for touchdown
-        self.set_ball()
         if self.state == 'overtime' and self.ball_pos_raw >= 100 and isinstance(self.down, int):
-            if self.overtime_round == 1:
+            if self.overtime_round in [1, 2]:
                 self.home_score += 6
-                self.state = 'PAT'
-                self.down = 'pat'
-            elif self.overtime_round == 2:
-                self.ball_pos_raw = 98
-                self.ball_pos = 2
+                self.state = 'pat'
+                self.down = 'PAT'
+            elif self.overtime_round >= 3:
+                self.home_score += 2
+                self.state = 'kickoff'
         elif self.state == 'overtime' and self.ball_pos_raw <= 0 and isinstance(self.down, int):
-            if self.overtime_round == 1:
+            if self.overtime_round in [1, 2]:
                 self.away_score += 6
-                self.state = 'PAT'
-                self.down = 'pat'
-            elif self.overtime_round == 2:
-                self.ball_pos_raw = 2
-                self.ball_pos = 2
+                self.state = 'pat'
+                self.down = 'PAT'
+            elif self.overtime_round >= 3:
+                self.away_score += 2
+                self.state = 'kickoff'
         # if self.overtime:
         #     self.state = 'overtime'
-            self.set_ball()
+        self.set_ball()
         return self
 
     def turnover(self):
         # print(f'{self.current_offense.name} has turned the ball over on downs.')
         self.current_offense, self.current_defense = self.current_defense, self.current_offense
+        if self.overtime:
+            self.state = 'ot-reset'
         return self
 
     def calc_ball_pos(self, yards_gained):
