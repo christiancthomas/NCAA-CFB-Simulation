@@ -2,9 +2,9 @@ class GameClock:
     def __init__(self):
         # self.quarter = 1
         # self.minutes = 15
-        self.quarter = 4
-        self.minutes = 0
-        self.seconds = 1
+        self.quarter = 1
+        self.minutes = 15
+        self.seconds = 0
         self.running = True
         self.halftime = False
         self.overtime = False
