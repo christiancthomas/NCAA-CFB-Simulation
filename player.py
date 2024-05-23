@@ -1,15 +1,30 @@
 import random
 
 class Player:
-    def __init__(self, name, position, skill_level):
+    def __init__(self, name, position, skill_level, number):
         self.name = name
         self.position = position
         self.skill_level = skill_level
+        self.number = number
 
-    @staticmethod
+    # @staticmethod
     def generate_random_player(position):
+        # number generation
+        match position:
+            case 'Quarterback': 
+                number = random.randrange(1, 19)
+            case 'Running Back':
+                number = random.randrange(0,49)
+            case 'Wide Receiver':
+                number = random.choice([random.randint(0, 19), random.randint(80, 89)])
+            case 'Linebacker':
+                number = random.choice([random.randrange(0,19), random.randint(30, 59)])
+            case 'Cornerback':
+                number = random.randrange(0,49)
+        
         return Player(
-            name=f"{position} {random.randint(1, 99)}",
+            name=f"{position} {number}",
             position=position,
-            skill_level=random.randint(50, 100)
+            skill_level=random.randint(50, 100),
+            number={number}
         )

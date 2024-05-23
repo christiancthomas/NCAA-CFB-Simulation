@@ -4,6 +4,8 @@ from collections import defaultdict
 
 class Season:
     def __init__(self, teams):
+        self.year = 2024
+        self.week = 1
         self.teams = teams
         self.schedule = defaultdict(list)
         self.standings = {team.name: {'wins': 0, 'losses': 0, 'ties': 0} for team in teams}
