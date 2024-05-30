@@ -26,6 +26,7 @@ class Game:
         self.overtime = False
         self.overtime_round = 0
         self.complete_round = False
+        self.play_success = False
 
     def play_ot(self):
         self.clock.overtime_clock()
@@ -260,12 +261,12 @@ class Game:
         defense_skill = sum(player.skill_level for player in self.current_defense.players) / len(self.current_defense.players)
 
         outcome = random.uniform(0, offense_skill + defense_skill)
-        play_success = (outcome < offense_skill) if play_type == "run" else (outcome < (offense_skill * 0.9))
+        self.play_success = (outcome < offense_skill) if play_type == "run" else (outcome < (offense_skill * 0.9))
         self.clock.resume() # start clock again now that play has started
         if self.state == 'down':
             self.clock.tick(random.randint(6, 15))  # Tick clock for play
 
-        if play_success:
+        if self.play_success:
             yards_gained = random.randint(1, 20)
             self.calc_ball_pos(yards_gained)
             # print(f"The {play_type} play was successful! Gained {yards_gained} yards.")
@@ -283,7 +284,7 @@ class Game:
             # print(f'PAT for {self.current_offense.name}')
 
         if not self.clock.is_game_over() and not self.clock.halftime and not self.clock.overtime:
-            if play_success and self.state == 'down':
+            if self.play_success and self.state == 'down':
                 self.clock.tick(random.randint(10, 20))  # Tick clock for time between plays
             # print(f"Time remaining: {self.clock}")
         # OT check

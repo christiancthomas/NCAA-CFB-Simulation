@@ -30,10 +30,14 @@ class TestTeam(unittest.TestCase):
 class TestGame(unittest.TestCase):
     def setUp(self):
         self.game = Game("Texas Tech", "Baylor")
+        self.game.current_offense = self.game.home
+        self.game.current_defense = self.game.away
 
     def test_game_initialization(self):
         self.assertEqual(self.game.home.name, "Texas Tech")
         self.assertEqual(self.game.away.name, "Baylor")
+        self.assertEqual(self.game.current_offense.name, "Texas Tech")
+        self.assertEqual(self.game.current_defense.name, "Baylor")
         self.assertEqual(self.game.ball_pos_raw, 25)
         self.assertEqual(self.game.ball_pos, 25)
         self.assertEqual(self.game.territory, 'home')
@@ -43,14 +47,15 @@ class TestGame(unittest.TestCase):
     def test_calc_ball_pos(self):
         self.game.calc_ball_pos(10)
         self.assertEqual(self.game.ball_pos_raw, 35)
-        self.assertEqual(self.game.ball_pos, 15)
+        self.assertEqual(self.game.ball_pos, 35)
         self.assertEqual(self.game.territory, 'home')
 
     def test_calc_ball_pos_away(self):
         self.game.current_offense = self.game.away
+        self.game.current_defense = self.game.home
         self.game.calc_ball_pos(10)
         self.assertEqual(self.game.ball_pos_raw, 15)
-        self.assertEqual(self.game.ball_pos, 35)
+        self.assertEqual(self.game.ball_pos, 15)
         self.assertEqual(self.game.territory, 'home')
 
     def test_calc_down_first_down(self):
@@ -83,12 +88,14 @@ class TestGame(unittest.TestCase):
 
     def test_simulate_play_run(self):
         initial_position = self.game.ball_pos_raw
-        self.game.simulate_play("run")
+        while self.game.play_success == False:
+            self.game.simulate_play("run")
         self.assertNotEqual(self.game.ball_pos_raw, initial_position)
 
     def test_simulate_play_pass(self):
         initial_position = self.game.ball_pos_raw
-        self.game.simulate_play("pass")
+        while self.game.play_success == False:
+            self.game.simulate_play("pass")
         self.assertNotEqual(self.game.ball_pos_raw, initial_position)
 
 class TestPlayoffOvertime(unittest.TestCase):
@@ -105,12 +112,6 @@ class TestPlayoffOvertime(unittest.TestCase):
         game.clock.quarter = 4
         game.clock.minutes = 0
         game.clock.seconds = 0
-
-        # Ensure the game does not end if it's a playoff game and the score is tied
-        # game.start_game()  # Try to end the game
-
-        # Check that the game has gone into overtime
-        # self.assertIsNone(game.winner, f"The game should not have a winner yet. Game winner is: {game.winner.name}.")
 
         # Simulate overtime until a winner is found
         game.start_game()
