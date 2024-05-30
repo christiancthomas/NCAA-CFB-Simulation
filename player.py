@@ -1,7 +1,7 @@
 import random
 
 class Player:
-    def __init__(self, name, position, skill_level, number):
+    def __init__(self, name, position, skill_level, number=0):
         self.name = name
         self.position = position
         self.skill_level = skill_level
