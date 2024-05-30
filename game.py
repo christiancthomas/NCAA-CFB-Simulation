@@ -294,8 +294,8 @@ class Game:
             self.play_ot()
 
     def start_game(self):
-        # self.home.display_team()
-        # self.away.display_team()
+        self.home.display_team()
+        self.away.display_team()
         self.coin_toss()
         self.state = 'kickoff'
         self.set_ball()
