@@ -14,13 +14,13 @@ class TestPlayer(unittest.TestCase):
     def test_generate_random_player(self):
         player = Player.generate_random_player("Running Back")
         self.assertEqual(player.position, "Running Back")
-        self.assertTrue(50 <= player.skill_level <= 100)
+        self.assertTrue(50 <= player.skill_level <= 99)
 
 class TestTeam(unittest.TestCase):
     def test_team_creation(self):
         team = Team("Tigers")
         self.assertEqual(team.name, "Tigers")
-        self.assertEqual(len(team.players), 5)  # Assuming 5 positions
+        self.assertEqual(len(team.players), 21)
 
     def test_display_team(self):
         team = Team("Lions")
