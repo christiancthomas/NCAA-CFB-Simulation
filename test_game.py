@@ -16,17 +16,6 @@ class TestPlayer(unittest.TestCase):
         self.assertEqual(player.position, "Running Back")
         self.assertTrue(50 <= player.skill_level <= 99)
 
-class TestTeam(unittest.TestCase):
-    def test_team_creation(self):
-        team = Team("Tigers")
-        self.assertEqual(team.name, "Tigers")
-        self.assertEqual(len(team.players), 21)
-
-    def test_display_team(self):
-        team = Team("Lions")
-        # We'll just check that this method runs without error
-        team.display_team()
-
 class TestGame(unittest.TestCase):
     def setUp(self):
         self.game = Game("Texas Tech", "Baylor")

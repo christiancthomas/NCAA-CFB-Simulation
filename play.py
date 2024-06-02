@@ -10,18 +10,24 @@ class Play:
         self.players = None
         self.result = None
         # stats?
+        self._execute()
 
     def _execute(self):
+        print('executing play...')
+        print(self.type)
         if self.type == 'run':
             self.result = self._execute_run()
         elif self.type == 'pass':
             self.result = self._execute_pass()
+        else: 
+            raise ValueError(f'{self.type} is not a valid play type.')
         return self.result
 
     ### RUN GAME ###
     def _execute_run(self):
         #TODO: backfield phase
-        for OT, DT in zip(self.offense.players)
+        return True
+        # for OT, DT in zip(self.offense.players)
     #TODO: second level phase
     #TODO: open field phase
 
