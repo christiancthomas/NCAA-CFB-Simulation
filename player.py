@@ -69,3 +69,13 @@ class Player:
             skill_level=random.randint(50, 99),
             number={number}
         )
+    
+    def update_player(self, attributes):
+        """Handles updating player attributes.
+        Usage: pass list of attributes and values
+        e.g., position='Quarterback'"""
+        for attr, value in attributes.items():
+            if hasattr(self, attr):
+                setattr(self, attr, value)
+            else:
+                raise AttributeError(f"Player has no attribute '{attr}'")
