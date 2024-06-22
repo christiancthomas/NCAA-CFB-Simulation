@@ -24,9 +24,9 @@ class Team:
                 matching_players = [player for player in matching_players if getattr(player, attr) in value]
             else:
                 matching_players = [player for player in matching_players if getattr(player, attr) == value]
-        return matching_players if len(matching_players) > 1 else (matching_players[0] if matching_players else None)
+        return matching_players
 
     def display_team(self):
         print(f"{self.name} {self.nickname}")
         for player in self.players:
-            print(f"Player: {player.name}, Position: {player.position}, Skill Level: {player.skill_level}")
+            print(f"Player: {player.first_name}, {player.last_name}, Number: {player.number}, Position: {player.position}, Rating: {player.rating}")

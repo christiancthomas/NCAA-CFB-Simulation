@@ -257,8 +257,8 @@ class Game:
             self.state = 'halftime'
             self.set_ball()
 
-        offense_skill = sum(player.skill_level for player in self.current_offense.players) / len(self.current_offense.players)
-        defense_skill = sum(player.skill_level for player in self.current_defense.players) / len(self.current_defense.players)
+        offense_skill = sum(player.rating for player in self.current_offense.players) / len(self.current_offense.players)
+        defense_skill = sum(player.rating for player in self.current_defense.players) / len(self.current_defense.players)
 
         outcome = random.uniform(0, offense_skill + defense_skill)
         self.play_success = (outcome < offense_skill) if play_type == "run" else (outcome < (offense_skill * 0.9))

@@ -16,17 +16,15 @@ class TestTeam(unittest.TestCase):
     def test_get_player(self):
         team = Team("Red Raiders")
         self.assertEqual(len(team.get_players(position='Quarterback')), 1) # assumes we're stil creating only one qb
-        self.assertEqual([wr.name for wr in team.get_players(position='Wide Receiver')], 1)
+        self.assertEqual([wr.first_name for wr in team.get_players(position='Wide Receiver')], ['Wide Receiver', 'Wide Receiver', 'Wide Receiver'])
 
     def test_update_player(self):
         team = Team("Oklahoma", "Sooners")
-        if len(team.get_players(position='Quarterback')) == 1:
-            qb = team.get_players(position='Quarterback') # assumes we're stil creating only one qb
-        else:
-            qb = team.get_players(position='Quarterback')[0]
-        qb.update_player({'skill_level': 99, 'name': 'Jalen Hurts', 'number': 1})
-        self.assertEqual(qb.name, 'Jalen Hurts')
-        self.assertEqual(qb.skill_level, 99)
+        qb = team.get_players(position='Quarterback')[0] # assumes we're stil creating only one qb
+        qb.update_player({'rating': 91, 'first_name': 'Jalen', 'last_name': 'Hurts', 'number': 1})
+        self.assertEqual(qb.first_name, 'Jalen')
+        self.assertEqual(qb.last_name, 'Hurts')
+        self.assertEqual(qb.rating, 91)
         self.assertEqual(qb.number, 1)
 
 if __name__ == "__main__":
