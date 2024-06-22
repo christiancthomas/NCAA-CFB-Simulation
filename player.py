@@ -1,10 +1,11 @@
 import random
 
 class Player:
-    def __init__(self, name, position, skill_level, number):
-        self.name = name
+    def __init__(self, first_name, last_name, position, rating, number):
+        self.first_name = first_name
+        self.last_name = last_name
         self.position = position
-        self.skill_level = skill_level
+        self.rating = rating
         self.number = number
 
     # @staticmethod
@@ -64,10 +65,11 @@ class Player:
                 d_nums.append(number)
 
         return Player(
-            name=f"{position} {number}",
+            first_name=f"{position}",
+            last_name=f"{number}",
             position=position,
-            skill_level=random.randint(50, 99),
-            number={number}
+            rating=random.randint(50, 99),
+            number=number
         )
     
     def update_player(self, attributes):

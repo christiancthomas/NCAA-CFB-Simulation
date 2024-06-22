@@ -5,16 +5,19 @@ from team import Team
 from game import Game
 
 class TestPlayer(unittest.TestCase):
-    def test_player_creation(self):
-        player = Player("John Doe", "Quarterback", 75)
-        self.assertEqual(player.name, "John Doe")
+    def test_rand_player_creation(self):
+        player = Player("Patrick", "Mahomes", "Quarterback", 95, 5)
+        self.assertEqual(player.first_name, "Patrick") 
+        self.assertEqual(player.last_name, "Mahomes")
         self.assertEqual(player.position, "Quarterback")
-        self.assertEqual(player.skill_level, 75)
+        self.assertEqual(player.rating, 95)
 
     def test_generate_random_player(self):
         player = Player.generate_random_player("Running Back")
         self.assertEqual(player.position, "Running Back")
-        self.assertTrue(50 <= player.skill_level <= 99)
+        self.assertEqual(player.first_name, player.position)
+        self.assertEqual(player.last_name, str(player.number))
+        self.assertTrue(50 <= player.rating <= 99)
 
 class TestGame(unittest.TestCase):
     def setUp(self):
