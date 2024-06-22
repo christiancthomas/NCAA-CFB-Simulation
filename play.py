@@ -17,7 +17,7 @@ class Play:
 
     def _execute(self):
         print('executing play...')
-        print(self.type)
+        self.yards_gained = None
         if self.type == 'run':
             self.result = self._execute_run()
         elif self.type == 'pass':
@@ -52,29 +52,37 @@ class Play:
         Open Field	    8 to 99         Long Tail
         """
         self.phase = 'backfield'
+        self._backfield_phase()
+        if self.yards_gained is not None:
+            return self.yards_gained
+        self.phase = 'second level'
+        self._second_level_phase()
+        if self.yards_gained is not None:
+            return self.yards_gained
+        # self.phase = 'open field'
+        # self._open_field_phase()
+        # if self.yards_gained is not None:
+        #     return self.yards_gained
+        # return self.yards_gained
+
+    def _backfield_phase(self):
+        """executes the backfield phase of a run play"""
         print('backfield phase')
         winners = []
-        # backfield phase
         OTs = set(self.offense.get_players(position='Offensive Tackle'))
         guards = set(self.offense.get_players(position='Offensive Guard'))
         edge = set(self.offense.get_players(position='Edge'))
         DTs = list(self.defense.get_players(position='Defensive Tackle'))
         print(f"OTs: {[ ot.first_name+' '+ot.last_name for ot in OTs]},\n\
-              guards: {[g.first_name+' '+g.last_name for g in guards]},\n\
+                guards: {[g.first_name+' '+g.last_name for g in guards]},\n\
                 edge: {[e.first_name+' '+e.last_name for e in edge]},\n\
                     DTs: {[dt.first_name+' '+dt.last_name for dt in DTs]}\n")
-        # make matchups between individual tackles and edges as well as guards and d tackles
         t_matchups = zip(OTs, edge)
         i_matchups = zip(guards, DTs)
 
-        # for ot, e in t_matchups:
-        #     print(f"OT: {ot.first_name} vs. Edge: {e.first_name}")
-        #     print(f"outside matchups: {[(ot.first_name+' '+ot.last_name, e.first_name+' '+e.last_name) for ot, e in t_matchups]}\n")
-        #     print(f"interior matchups: {[(g.first_name+' '+g.last_name, dt.first_name+' '+dt.last_name) for g, dt in i_matchups]}\n")
         for ot, e in t_matchups:
             print("entering for loop...")
             print(f"Offensive tackle {ot.first_name} {ot.last_name}, {ot.rating} OVR vs. Edge: {e.first_name} {e.last_name}, {e.rating} OVR")
-            # dice roll
             matchup = (ot.rating/100 * random.random() - e.rating/100 * random.random())
             print(f"dice roll result: {matchup}")
             if matchup > 0:
@@ -102,18 +110,21 @@ class Play:
             print('\n')
             winners.append(winner)
         print(f"winners: {[winner.first_name+' '+winner.last_name for winner in winners]}")
-        # check for defensive linemen winners
         for winner in winners:
             if winner in self.defense.get_players(position = ['Defensive Tackle', 'Edge']):
-                # matchup challenge to see if they tackle the RB
                 matchup = (self.offense.get_players(position='Running Back')[0].rating/100 * random.random() - winner.rating/100 * random.random())
                 if matchup < 0:
                     print(f'{winner.first_name} {winner.last_name} tackles {self.offense.get_players(position='Running Back')[0].first_name} {self.offense.get_players(position='Running Back')[0].last_name}')
+                    self.yards_gained = self._yards_gained_helper(self.phase)
                     break
-        self.yards_gained = self._yards_gained_helper(self.phase)
+        return self.yards_gained
         # 👆🏼 move this back forward again when done testing
 
+    def _second_level_phase(self):
 
+
+    def _open_field_phase(self):
+        ...
 
 
 
@@ -132,7 +143,7 @@ class Play:
         Open Field	    8 to 99         Long Tail"""
         # yards gained calculation
         if phase == 'backfield':
-            return self._pick_from_bell_curve(-3, 3)
+            return self._pick_from_bell_curve(-4, 4)
         elif phase == 'second level':
             return self._pick_from_bell_curve(2, 7)
         elif phase == 'open field':
