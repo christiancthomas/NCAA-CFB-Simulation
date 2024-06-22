@@ -1,5 +1,6 @@
 """governs the rules of a single play"""
 import random
+import numpy as np
 
 class Play:
     def __init__(self, offense, defense, type):
@@ -52,6 +53,7 @@ class Play:
         """
         self.phase = 'backfield'
         print('backfield phase')
+        winners = []
         # backfield phase
         OTs = set(self.offense.get_players(position='Offensive Tackle'))
         guards = set(self.offense.get_players(position='Offensive Guard'))
@@ -74,10 +76,64 @@ class Play:
                 winner = e
             else:
                 winner = [ot, e].sort(key=lambda x: x.rating, reverse=True)[0]
+            winners.append(winner)
         for g, dt in i_matchups:
             print(f"g: {g}, dt: {dt}")
+            matchup = (g.rating/100 * random.random() - dt.rating/100 * random.random())
+            if matchup > 0:
+                print('guard wins')
+                winner = g
+            elif matchup < 0:
+                print('dt wins')
+                winner = dt
+            else:
+                winner = [g, dt].sort(key=lambda x: x.rating, reverse=True)[0]
+            winners.append(winner)
+        print(f"winners: {winners}")
+        # check for defensive linemen winners
+        for winner in winners:
+            if winner in DTs:
+                print('dt wins')
+                # matchup challenge to see if they tackle the RB
+                matchup = (self.offense.get_players(position='Running Back')[0].rating/100 * random.random() - winner.rating/100 * random.random())
+                if matchup < 0:
+                    print('dt tackles rb')
+                    
+
+                
 
 
 
 
     ### PASS GAME ###
+
+    def _yards_gained_helper(self, phase):
+        """helper function to calculate yards gained based on phase of play.
+        uses a weighted random number generator to determine yards gained.
+        weights are adjusted based on phase of play.
+        uses _pick_from_bell_curve() to generate random number within desired range and weighting.
+        Phase	        Yards Gained    Weighting
+        Backfield	    -5 to 2         Bell Curve
+        Second Level	3 to 6          Bell Curve
+        Open Field	    7 to 99         Long Tail"""
+        # yards gained calculation
+        if phase == 'backfield':
+            return self._pick_from_bell_curve(-5, 2)
+        elif phase == 'second level':
+            return self._pick_from_bell_curve(3, 6)
+        elif phase == 'open field':
+            return self._pick_from_bell_curve(7, 99, mu=15, sigma=10)
+        else:
+            raise ValueError(f'{phase} is not a valid phase of play.')
+    
+    def _pick_from_bell_curve(min_val, max_val, mu=None, sigma=None):
+        if mu is None:
+            mu = (max_val + min_val) / 2  # Mean of the distribution
+        if sigma is None:
+            sigma = (max_val - min_val) / 6  # Default sigma to spread over the range
+        
+        while True:
+            result = np.random.normal(mu, sigma)
+            if min_val <= result <= max_val:
+                return round(result)
+            # If result is outside the range, loop again
