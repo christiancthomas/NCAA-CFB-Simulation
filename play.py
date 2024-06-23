@@ -31,7 +31,8 @@ class Play:
         """executes a run play with three phases
         1. backfield phase: QB hands off to RB.
             - There is a dice roll to determine who wins each blocking engagement.
-            - If any of the defensive linemen wins, there is a dice roll for each one to see if they tackle the RB.
+            - If any of the defensive linemen wins, there is a dice roll to determine which winning lineman are in position to make a tackle (high chance).
+            - There is a dice roll for each lineman in position to see if they tackle the RB.
             - If the RB wins the engagement(s), they advance to the second level phase.
             - If the RB loses any engagement(s), the play is over.
         2. second level phase: RB advances past the line of scrimmage and is now engaging with linebackers and cornerbacks.
@@ -59,6 +60,9 @@ class Play:
         self._second_level_phase()
         if self.yards_gained is not None:
             return self.yards_gained
+        #tomporary -- delete 👇
+        else:
+            return 0
         # self.phase = 'open field'
         # self._open_field_phase()
         # if self.yards_gained is not None:
@@ -81,7 +85,6 @@ class Play:
         i_matchups = zip(guards, DTs)
 
         for ot, e in t_matchups:
-            print("entering for loop...")
             print(f"Offensive tackle {ot.first_name} {ot.last_name}, {ot.rating} OVR vs. Edge: {e.first_name} {e.last_name}, {e.rating} OVR")
             matchup = (ot.rating/100 * random.random() - e.rating/100 * random.random())
             print(f"dice roll result: {matchup}")
@@ -95,6 +98,7 @@ class Play:
                 winner = [ot, e].sort(key=lambda x: x.rating, reverse=True)[0]
             print('\n')
             winners.append(winner)
+
         for g, dt in i_matchups:
             print(f"Offensive guard {g.first_name} {g.last_name}, {g.rating} OVR vs. Defensive Tackle: {dt.first_name} {dt.last_name}, {dt.rating} OVR")
             matchup = (g.rating/100 * random.random() - dt.rating/100 * random.random())
@@ -110,17 +114,55 @@ class Play:
             print('\n')
             winners.append(winner)
         print(f"winners: {[winner.first_name+' '+winner.last_name for winner in winners]}")
+
         for winner in winners:
+            # determine who gets a chance at making a tackle
+            tacklers = []
             if winner in self.defense.get_players(position = ['Defensive Tackle', 'Edge']):
-                matchup = (self.offense.get_players(position='Running Back')[0].rating/100 * random.random() - winner.rating/100 * random.random())
+                # 1. calculate if the winner is in right position to make a tackle
+                if random.random() < 0.8:
+                    tacklers.append(winner)
+        # 2. calculate if the tackler(s) makes the tackle
+        if len(tacklers) != 0:
+            for tackler in tacklers:
+                print(f"Defensive Lineman {tackler.first_name} {tackler.last_name}, {tackler.rating} OVR vs. Running Back: {self.offense.get_players(position='Running Back')[0].first_name} {self.offense.get_players(position='Running Back')[0].last_name}, {self.offense.get_players(position='Running Back')[0].rating} OVR")
+                matchup = (self.offense.get_players(position='Running Back')[0].rating/100 * random.random() - tackler.rating/100 * random.random())
                 if matchup < 0:
-                    print(f'{winner.first_name} {winner.last_name} tackles {self.offense.get_players(position='Running Back')[0].first_name} {self.offense.get_players(position='Running Back')[0].last_name}')
+                    print(f'{tackler.first_name} {tackler.last_name} tackles {self.offense.get_players(position='Running Back')[0].first_name} {self.offense.get_players(position='Running Back')[0].last_name}')
+                    print('tackle made, calculating yards gained...')
                     self.yards_gained = self._yards_gained_helper(self.phase)
                     break
+        else:
+            print('no tacklers in position')
+        # 3. calculate yards gained
         return self.yards_gained
-        # 👆🏼 move this back forward again when done testing
+
 
     def _second_level_phase(self):
+        """executes the second level phase of a run play"""
+        print('second level phase')
+        winners = []
+        RB = self.offense.get_players(position='Running Back')[0]
+        LBs = self.defense.get_players(position='Linebacker').sort(key=lambda x: x.rating, reverse=True)
+        CBs = self.defense.get_players(position='Cornerback').sort(key=lambda x: x.rating, reverse=True)
+
+        for lb in LBs:
+            # 1. determine who gets a chance at making a tackle
+            tacklers = []
+            if random.random() < 0.5:
+                tacklers.append(lb)
+        # 2. calculate if the tackler(s) makes the tackle START HERE
+        if len(tacklers) != 0:
+            for lb in tacklers:
+                print(f"Linebacker {lb.first_name} {lb.last_name}, {lb.rating} OVR vs. Running Back: {RB.first_name} {RB.last_name}, {RB.rating} OVR")
+                matchup = (lb.rating/100 * random.random() - RB.rating/100 * random.random())
+                print(f"dice roll result: {matchup}")
+            if matchup > 0:
+                print('lb wins')
+                winner = lb
+            elif matchup < 0:
+                print('rb wins')
+                winner = RB
 
 
     def _open_field_phase(self):
