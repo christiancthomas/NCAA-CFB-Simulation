@@ -12,7 +12,7 @@ class Team:
 
     def create_players(self):
         positions = ['Quarterback', 'Running Back', 'Wide Receiver', 'Wide Receiver', 'Wide Receiver', 'Offensive Tackle', 'Offensive Tackle', 'Offensive Guard',
-                     'Offensive Guard', 'Center', 'Tight End', 'Edge', 'Edge', 'Defensive Tackle', 'Defensive Tackle', 'Linebacker', 'Cornerback', 'Cornerback',
+                     'Offensive Guard', 'Center', 'Tight End', 'Edge', 'Edge', 'Defensive Tackle', 'Defensive Tackle', 'Linebacker', 'Linebacker', 'Cornerback', 'Cornerback',
                      'Cornerback', 'Safety', 'Safety,' 'Kicker', 'Punter']
         players = [Player.generate_random_player(position) for position in positions]
         return players

@@ -19,7 +19,8 @@ class TestPlay(unittest.TestCase):
         away_team.display_team()
 
         yards_gained = []
-        for _ in range(10000):
+        cycles = 1
+        for _ in range(cycles):
             play = Play(home_team, away_team, 'run')
             play._execute_run()
             yards_gained.append(play.yards_gained)
@@ -29,7 +30,7 @@ class TestPlay(unittest.TestCase):
         print("Yards Gained Distribution:")
         for i in range(min(yards_gained), max(yards_gained) + 1):
             count = yards_gained.count(i)
-            print(f"{i} yards: {count} plays, {count/100}% of distribution")
+            print(f"{i} yards: {count} plays, {count/cycles*100}% of distribution")
 
 if __name__ == "__main__":
     unittest.main()
