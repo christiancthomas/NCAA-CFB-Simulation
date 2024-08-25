@@ -4,9 +4,16 @@
 - conference championship rules
 - conference bowl tie-ins"""
 
+import sys, os
+current_dir = os.path.dirname(__file__)
+json_path = os.path.join(current_dir, '..', 'utils', 'cfb.json')
+from utils import load_teams_from_json
+
+teams = load_teams_from_json(json_path)
+
 class Conference:
     def __init__(self):
-        self.teams = 0
+        self.teams = None
         self.divisions = False
         self.championship = False
         self.bowl_tie_ins = False
@@ -64,7 +71,9 @@ class ACC(Conference):
         Wake Forest	    Duke	        NC State"""
     
     name = 'ACC'
-    teams = 15
+    for team in teams:
+        if team.conference == 'ACC':
+            teams.append(team)
     min_games = 8
     max_games = 8
     protected_rivalries = {
@@ -92,7 +101,6 @@ class ACC(Conference):
         opponents = self.protected_rivalries
 
         # fill out the rest of the conference schedule
-
 
 
 
