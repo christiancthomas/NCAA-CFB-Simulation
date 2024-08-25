@@ -35,7 +35,7 @@ class Season:
                 for opponent in selected_teams:
                     self.schedule[team].append(opponent)
                     self.schedule[opponent].append(team)
-                    self.matchups.add((team.name, opponent.name))  # Track the matchup
+                    self.matchups.add((team, opponent))  # Track the matchup
 
     def _generate_out_of_conference_games(self):
         """

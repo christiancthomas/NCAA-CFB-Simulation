@@ -1,5 +1,5 @@
 import json
-from team import Team
+from src.team import Team
 
 def load_teams_from_json(file_path):
     with open(file_path, 'r') as file:

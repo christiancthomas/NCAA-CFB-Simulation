@@ -1,4 +1,5 @@
-from team import Team
+import test_setup
+from src.team import Team
 from player import Player
 import unittest
 
