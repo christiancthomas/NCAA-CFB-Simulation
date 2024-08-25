@@ -11,8 +11,6 @@ class TestPlay(unittest.TestCase):
         home_team.display_team()
         away_team.display_team()
         play = Play(home_team, away_team, 'run')._execute_run
-        california = "\U0001F3F4\U000E0067\U000E0062\U000E0063\U000E0061\U000E007F"
-        print(emoji.emojize("\U0001F3F4\U000E0067\U000E0062\U000E0063\U000E0061\U000E007F"))
         self.assertTrue(play, 1)
 
     def test_run_distribution(self):
