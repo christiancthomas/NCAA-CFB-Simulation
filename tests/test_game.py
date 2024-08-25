@@ -1,7 +1,8 @@
+import test_setup
 import unittest
 import random
 from player import Player
-from team import Team
+from src.team import Team
 from game import Game
 
 class TestPlayer(unittest.TestCase):

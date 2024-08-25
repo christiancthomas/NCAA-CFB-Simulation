@@ -1,7 +1,7 @@
+import test_setup
 from team import Team
 from player import Player
 from play import Play
-import emoji
 import unittest
 
 class TestPlay(unittest.TestCase):

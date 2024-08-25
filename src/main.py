@@ -1,4 +1,4 @@
-from team_loader import load_teams_from_json
+from utils.team_loader import load_teams_from_json
 from season import Season
 from playoffs import Playoffs
 # Load teams from JSON file
