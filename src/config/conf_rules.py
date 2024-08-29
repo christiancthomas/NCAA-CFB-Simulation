@@ -5,6 +5,7 @@
 - conference bowl tie-ins"""
 
 import sys, os
+import random
 current_dir = os.path.dirname(__file__)
 json_path = os.path.join(current_dir, '..', 'utils', 'cfb.json')
 from utils import load_teams_from_json
@@ -99,6 +100,19 @@ class ACC(Conference):
     def scheduler(self):
         # start each schedule by including protected rivalries
         opponents = self.protected_rivalries
+        for team in opponents:
+            while len(opponents[team]) < 8:
+                # keep going until conference schedule is full
+                next_opponent = False
+                while next_opponent is False:
+                    next_opponent = random.choice(list(opponents.items()))
+                    if next_opponent in opponents[team]:
+                        next_opponent = False
+                    else:
+                        opponents[team] = next_opponent
+                        opponents[next_opponent] = opponents[team]
+        print(opponents)
+
 
         # fill out the rest of the conference schedule
 
