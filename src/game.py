@@ -3,6 +3,7 @@ from team import Team
 from game_clock import GameClock
 from game_state import GameState
 from score import Score
+from play import create_play  # Import the factory function
 
 class Game:
     def __init__(self, home_name, away_name, playoff=False):
@@ -203,6 +204,7 @@ class Game:
         return self
 
     def simulate_play(self, play_type):
+        """Use the Play class hierarchy to simulate plays"""
         if self.clock.is_game_over() and not self.playoff:
             return
 
@@ -210,31 +212,33 @@ class Game:
             self.clock.end_halftime()
             self.state.state = 'halftime'
             self.set_ball()
+            return
 
-        offense_skill = sum(player.rating for player in self.current_offense.players) / len(self.current_offense.players)
-        defense_skill = sum(player.rating for player in self.current_defense.players) / len(self.current_defense.players)
+        # Create a play object using the factory function
+        play = create_play(play_type, self.current_offense, self.current_defense)
 
-        outcome = random.uniform(0, offense_skill + defense_skill)
-        self.state.play_success = (outcome < offense_skill) if play_type == "run" else (outcome < (offense_skill * 0.9))
+        # Execute the play and get the yards gained
         self.clock.resume()
         if self.state.state == 'down':
             self.clock.tick(random.randint(6, 15))
 
-        if self.state.play_success:
-            yards_gained = random.randint(1, 20)
-            self.calc_ball_pos(yards_gained)
-        else:
-            yards_gained = 0
-            if play_type == "pass" and not self.state.overtime:
-                self.clock.stop()
+        yards_gained = play.execute()
 
+        # Handle turnover if it happened
+        if play.turnover:
+            self.turnover()
+
+        # Update game state based on play results
+        self.calc_ball_pos(yards_gained)
         self.calc_down(yards_gained)
         self.score()
 
+        # Additional clock management
         if not self.clock.is_game_over() and not self.clock.halftime and not self.clock.overtime:
-            if self.state.play_success and self.state.state == 'down':
+            if yards_gained > 0 and self.state.state == 'down':
                 self.clock.tick(random.randint(10, 20))
 
+        # Check for overtime
         if self.clock.is_game_over() and self.playoff and self.score.home_score == self.score.away_score and self.state.overtime_round == 0:
             self.state.overtime = True
             self.clock.overtime = True
