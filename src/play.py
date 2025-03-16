@@ -221,7 +221,7 @@ class PassPlay(Play):
 
         if roll < completion_chance * 0.9:  # Completed pass
             self.yards_gained = random.randint(5, 25)
-        elif roll < completion_chance:  # Interception
+        elif roll < completion_chance * 0.93:  # Interception
             self.turnover = True
             self.yards_gained = -random.randint(0, 20)  # Return yards
         else:  # Incomplete pass
