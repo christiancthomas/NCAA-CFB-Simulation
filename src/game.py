@@ -9,7 +9,7 @@ class Game:
     def __init__(self, home_name, away_name, playoff=False):
         self.home = Team(home_name)
         self.away = Team(away_name)
-        self.score = Score()
+        self.score = Score
         self.state = GameState()
         self.current_offense = self.home
         self.current_defense = self.away
