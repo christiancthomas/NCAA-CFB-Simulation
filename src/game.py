@@ -9,7 +9,7 @@ class Game:
     def __init__(self, home_name, away_name, playoff=False):
         self.home = Team(home_name)
         self.away = Team(away_name)
-        self.score = Score
+        self.score = Score()
         self.state = GameState()
         self.current_offense = self.home
         self.current_defense = self.away
@@ -123,10 +123,10 @@ class Game:
 
     def post_play(self, yards_gained):
         self.calc_down(yards_gained)
-        self.score()
+        self.points()
         return self
 
-    def score(self):
+    def points(self):
         if self.state.state == 'pat' and self.current_offense == self.home:
             if self.state.ball_pos_raw >= 100:
                 self.score.home_score += 2
@@ -231,7 +231,7 @@ class Game:
         # Update game state based on play results
         self.calc_ball_pos(yards_gained)
         self.calc_down(yards_gained)
-        self.score()
+        self.points()
 
         # Additional clock management
         if not self.clock.is_game_over() and not self.clock.halftime and not self.clock.overtime:

@@ -91,6 +91,7 @@ class TestGame(unittest.TestCase):
     def test_game_initialization(self):
         """Test that a Game object is initialized correctly"""
         game = self.game
+        print(f'game.score: {game.score.home_score}')
 
         # Test teams
         self.assertEqual(game.home.name, "Home Team")
