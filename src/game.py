@@ -215,7 +215,7 @@ class Game:
             return
 
         # Create a play object using the factory function
-        play = create_play(play_type, self.current_offense, self.current_defense)
+        play = self._create_play(play_type, self.current_offense, self.current_defense)
 
         # Execute the play and get the yards gained
         self.clock.resume()
@@ -243,6 +243,9 @@ class Game:
             self.state.overtime = True
             self.clock.overtime = True
             self.play_ot()
+
+    def _create_play(self, play_type): 
+        return create_play(play_type, self.current_offense, self.current_defense)
 
     def start_game(self):
         self.coin_toss()
