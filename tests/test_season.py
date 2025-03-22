@@ -29,6 +29,7 @@ class TestSeason(unittest.TestCase):
             print(f'{matchup[0].name} ({matchup[0].conference}) vs. {matchup[1].name} ({matchup[1].conference})')
             self.assertEqual(matchup[0].conference, matchup[1].conference)
         print(team_count)
+        season.display_standings()
     
     def test_acc_season(self):
         pass
