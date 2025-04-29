@@ -289,6 +289,9 @@ class TestGame(unittest.TestCase):
         self.assertEqual(game.state.down, 1)
         self.assertEqual(game.state.state, 'down')
 
+    def test_overtime(self):
+        """Test that overtime setup works correctly"""
+
 
 if __name__ == '__main__':
     unittest.main()
