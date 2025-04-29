@@ -6,7 +6,10 @@ from score import Score
 from play import create_play  # Import the factory function
 
 class Game:
+    """Manages a football game between two teams."""
+    
     def __init__(self, home_name, away_name, playoff=False):
+        """Initialize a new game between two teams."""
         self.home = Team(home_name)
         self.away = Team(away_name)
         self.score = Score()
@@ -18,250 +21,32 @@ class Game:
         self.clock = GameClock()
         self.playoff = playoff
 
-    def play_ot(self):
-        self.clock.overtime_clock()
-        self.coin_toss()
-        self.state.state = 'ot-reset'
-        self.set_ball()
-        self.state.state = 'overtime'
-        print("Overtime begins!")
-        self.state.overtime_round += 1
-        # Top of round
-        while self.state.overtime and self.score.home_score == self.score.away_score:
-            ball_first, ball_second = self.state.receive, self.state.defend
-            match self.state.overtime_round:
-                case 1:
-                    while self.current_offense == ball_first:
-                        self.simulate_play(random.choice(['run', 'pass']))
-                    while self.current_offense == ball_second:
-                        self.simulate_play(random.choice(['run', 'pass']))
-                case 2:
-                    while self.current_offense == ball_first:
-                        self.simulate_play(random.choice(['run', 'pass']))
-                    while self.current_offense == ball_second:
-                        self.simulate_play(random.choice(['run', 'pass']))
-                case _ if self.state.overtime_round >= 3:
-                    while self.current_offense == ball_first:
-                        self.simulate_play(random.choice(['run', 'pass']))
-                    while self.current_offense == ball_second:
-                        self.simulate_play(random.choice(['run', 'pass']))
-            self.state.overtime_round += 1
-
-    def coin_toss(self):
-        self.state.receive = random.choice([self.home, self.away])
-        self.current_offense = self.state.receive
-        if self.home == self.state.receive:
-            self.current_defense = self.away
-            self.state.defend = self.away
-        else:
-            self.current_defense = self.home
-            self.state.defend = self.home
-        return self
-
-    def kick(self):
-        """method for handling field goals and PAT tries"""
-        ...
-
-    def set_ball(self):
-        if self.state.state == 'kickoff':
-            if not self.state.opening:
-                self.current_offense, self.current_defense = self.current_defense, self.current_offense
-            if self.current_offense == self.home:
-                self.state.ball_pos_raw = 25
-                self.state.ball_pos = 25
-                self.state.down = 1
-                self.state.yards_to_go = 10
-            else:
-                self.state.ball_pos_raw = 75
-                self.state.ball_pos = 25
-                self.state.down = 1
-                self.state.yards_to_go = 10
-            if self.state.overtime:
-                self.state.state = 'overtime'
-            else:
-                self.state.state = 'down'
-            self.state.opening = False
-
-        if self.state.state == 'pat':
-            if self.current_offense == self.home:
-                self.state.ball_pos_raw = 98
-                self.state.down = 'PAT'
-                self.state.yards_to_go = 2
-            else:
-                self.state.ball_pos_raw = 2
-                self.state.down = 'PAT'
-                self.state.yards_to_go = 2
-
-        if self.state.state == 'halftime':
-            self.current_offense = self.state.defend
-            self.current_defense = self.state.receive
-            if self.current_offense == self.home:
-                self.state.ball_pos_raw = 25
-                self.state.ball_pos = 25
-                self.state.down = 1
-                self.state.yards_to_go = 10
-            else:
-                self.state.ball_pos_raw = 75
-                self.state.ball_pos = 25
-                self.state.down = 1
-                self.state.yards_to_go = 10
-            self.state.state = 'down'
-
-        if self.state.state == 'ot-reset':
-            self.state.ball_pos = 25
-            if self.current_offense == self.home:
-                self.state.ball_pos_raw = 75
-            else:
-                self.state.ball_pos_raw = 25
-            self.state.state = 'overtime'
-            self.state.down = 1
-        return self
-
-    def ordinal(self, down):
-        ord_dict = {1: '1st', 2: '2nd', 3: '3rd', 4: '4th', 'PAT': 'PAT'}
-        return ord_dict[down]
-
-    def post_play(self, yards_gained):
-        self.calc_down(yards_gained)
-        self.points()
-        return self
-
-    def points(self):
-        if self.state.state == 'pat' and self.current_offense == self.home:
-            if self.state.ball_pos_raw >= 100:
-                self.score.home_score += 2
-            self.state.state = 'kickoff'
-        elif self.state.state == 'pat' and self.current_offense == self.away:
-            if self.state.ball_pos_raw <= 0:
-                self.score.away_score += 2
-            self.state.state = 'kickoff'
-        elif self.state.state == 'down' and self.state.ball_pos_raw >= 100 and isinstance(self.state.down, int):
-            self.score.home_score += 6
-            self.state.ball_pos_raw = 98
-            self.state.ball_pos = 2
-            self.state.down = 'PAT'
-            self.state.state = 'pat'
-            self.clock.stop()
-        elif self.state.state == 'down' and self.state.ball_pos_raw <= 0 and isinstance(self.state.down, int):
-            self.score.away_score += 6
-            self.state.ball_pos_raw = 2
-            self.state.ball_pos = 2
-            self.state.down = 'PAT'
-            self.state.state = 'pat'
-            self.clock.stop()
-        if self.state.state == 'overtime' and self.state.ball_pos_raw >= 100 and isinstance(self.state.down, int):
-            if self.state.overtime_round in [1, 2]:
-                self.score.home_score += 6
-                self.state.state = 'pat'
-                self.state.down = 'PAT'
-            elif self.state.overtime_round >= 3:
-                self.score.home_score += 2
-                self.state.state = 'kickoff'
-        elif self.state.state == 'overtime' and self.state.ball_pos_raw <= 0 and isinstance(self.state.down, int):
-            if self.state.overtime_round in [1, 2]:
-                self.score.away_score += 6
-                self.state.state = 'pat'
-                self.state.down = 'PAT'
-            elif self.state.overtime_round >= 3:
-                self.score.away_score += 2
-                self.state.state = 'kickoff'
-        self.set_ball()
-        return self
-
-    def turnover(self):
-        self.current_offense, self.current_defense = self.current_defense, self.current_offense
-        if self.state.overtime:
-            self.state.state = 'ot-reset'
-        return self
-
-    def calc_ball_pos(self, yards_gained):
-        if self.current_offense == self.home:
-            self.state.ball_pos_raw += yards_gained
-        else:
-            self.state.ball_pos_raw -= yards_gained
-        self.state.ball_pos = 50 - abs(self.state.ball_pos_raw - 50)
-        if self.state.ball_pos_raw < 50:
-            self.state.territory = 'home'
-        elif self.state.ball_pos_raw == 50:
-            self.state.territory = 'midfield'
-        else:
-            self.state.territory = 'away'
-        return self
-
-    def calc_down(self, yards_gained):
-        self.state.yards_to_go -= yards_gained
-        if self.state.yards_to_go <= 0:
-            self.state.down = 1
-            self.state.yards_to_go = 10
-        elif self.state.yards_to_go > 0 and self.state.down == 4:
-            self.turnover()
-            self.state.down = 1
-            self.state.yards_to_go = 10
-        elif self.state.state == 'pat':
-            self.state.down = 'PAT'
-        else:
-            self.state.down += 1
-        return self
-
-    def simulate_play(self, play_type):
-        """Use the Play class hierarchy to simulate plays"""
-        if self.clock.is_game_over() and not self.playoff:
-            return
-
-        if self.clock.halftime:
-            self.clock.end_halftime()
-            self.state.state = 'halftime'
-            self.set_ball()
-            return
-
-        # Create a play object using the factory function
-        play = self._create_play(play_type, self.current_offense, self.current_defense)
-
-        # Execute the play and get the yards gained
-        self.clock.resume()
-        if self.state.state == 'down':
-            self.clock.tick(random.randint(6, 15))
-
-        yards_gained = play.execute()
-
-        # Handle turnover if it happened
-        if play.turnover:
-            self.turnover()
-
-        # Update game state based on play results
-        self.calc_ball_pos(yards_gained)
-        self.calc_down(yards_gained)
-        self.points()
-
-        # Additional clock management
-        if not self.clock.is_game_over() and not self.clock.halftime and not self.clock.overtime:
-            if yards_gained > 0 and self.state.state == 'down':
-                self.clock.tick(random.randint(10, 20))
-
-        # Check for overtime
-        if self.clock.is_game_over() and self.playoff and self.score.home_score == self.score.away_score and self.state.overtime_round == 0:
-            self.state.overtime = True
-            self.clock.overtime = True
-            self.play_ot()
-
-    def _create_play(self, play_type): 
-        return create_play(play_type, self.current_offense, self.current_defense)
-
     def start_game(self):
+        """Start and run the entire game simulation."""
+        # Setup game
         self.home.display_team()
         self.away.display_team()
         self.coin_toss()
         self.state.state = 'kickoff'
         self.set_ball()
 
+        # Main game loop
         while not self.clock.is_game_over() and not self.state.overtime:
             if self.clock.halftime:
                 self.clock.end_halftime()
                 self.state.state = 'halftime'
                 self.set_ball()
                 continue
+                
             self.simulate_play(random.choice(['run', 'pass']))
+                
+        # Handle overtime if needed
+        if self.clock.is_game_over() and self.playoff and self.score.home_score == self.score.away_score and self.state.overtime_round == 0:
+            self.state.overtime = True
+            self.clock.overtime = True
+            self.play_ot()
 
+        # Determine winner
         if self.score.home_score > self.score.away_score:
             self.winner = self.home
             self.loser = self.away
@@ -273,3 +58,288 @@ class Game:
         else:
             self.tie = True
             print(f"The game ends in a tie. Final Score: {self.home.name}: {self.score.home_score} - {self.away.name}: {self.score.away_score}")
+
+    # Coin toss and team setup
+    def coin_toss(self):
+        """Simulate a coin toss to determine first possession."""
+        self.state.receive = random.choice([self.home, self.away])
+        self.current_offense = self.state.receive
+        self.state.defend = self.away if self.home == self.state.receive else self.home
+        self.current_defense = self.state.defend
+        return self
+
+    # Ball position management
+    def set_ball(self):
+        """Set ball position based on current game state."""
+        # Kickoff
+        if self.state.state == 'kickoff':
+            if not self.state.opening:
+                self.current_offense, self.current_defense = self.current_defense, self.current_offense
+            
+            if self.current_offense == self.home:
+                self.state.ball_pos_raw = 25
+                self.state.ball_pos = 25
+            else:
+                self.state.ball_pos_raw = 75
+                self.state.ball_pos = 25
+                
+            self.state.down = 1
+            self.state.yards_to_go = 10
+            
+            if self.state.overtime:
+                self.state.state = 'overtime'
+            else:
+                self.state.state = 'down'
+            
+            self.state.opening = False
+            
+        # Point after touchdown
+        elif self.state.state == 'pat':
+            if self.current_offense == self.home:
+                self.state.ball_pos_raw = 98
+            else:
+                self.state.ball_pos_raw = 2
+                
+            self.state.down = 'PAT'
+            self.state.yards_to_go = 2
+            
+        # Halftime transition
+        elif self.state.state == 'halftime':
+            self.current_offense = self.state.defend
+            self.current_defense = self.state.receive
+            
+            if self.current_offense == self.home:
+                self.state.ball_pos_raw = 25
+                self.state.ball_pos = 25
+            else:
+                self.state.ball_pos_raw = 75
+                self.state.ball_pos = 25
+                
+            self.state.down = 1
+            self.state.yards_to_go = 10
+            self.state.state = 'down'
+            
+        # Overtime setup
+        elif self.state.state == 'ot-reset':
+            self.state.ball_pos = 25
+            
+            if self.current_offense == self.home:
+                self.state.ball_pos_raw = 75
+            else:
+                self.state.ball_pos_raw = 25
+                
+            self.state.state = 'overtime'
+            self.state.down = 1
+            self.state.yards_to_go = 10
+            
+        return self
+
+    # Overtime handling
+    def play_ot(self):
+        """Handle overtime process."""
+        # Setup overtime
+        self.clock.overtime_clock()
+        self.coin_toss()
+        self.state.state = 'ot-reset'
+        self.set_ball()
+        self.state.state = 'overtime'
+        print("Overtime begins!")
+        self.state.overtime_round += 1
+        
+        # Continue playing overtime rounds until a winner is determined
+        while self.state.overtime and self.score.home_score == self.score.away_score:
+            # Get team order
+            ball_first = self.state.receive
+            ball_second = self.state.defend
+            
+            # First team's possession
+            self.current_offense = ball_first
+            self.current_defense = ball_second
+            current_offense_start = self.current_offense
+            
+            # Run plays until turnover or score
+            while self.current_offense == current_offense_start and self.state.state != 'pat':
+                self.simulate_play(random.choice(['run', 'pass']))
+                
+            # Second team's possession
+            self.current_offense = ball_second
+            self.current_defense = ball_first
+            current_offense_start = self.current_offense
+            
+            # Run plays until turnover or score
+            while self.current_offense == current_offense_start and self.state.state != 'pat':
+                self.simulate_play(random.choice(['run', 'pass']))
+                
+            # Increment overtime round
+            self.state.overtime_round += 1
+
+    # Play processing
+    def simulate_play(self, play_type):
+        """Simulate a single play."""
+        # Guard clauses - early returns for special cases
+        if self.clock.is_game_over() and not self.playoff:
+            return
+
+        if self.clock.halftime:
+            self.clock.end_halftime()
+            self.state.state = 'halftime'
+            self.set_ball()
+            return
+
+        # Create and execute the play
+        play = self._create_play(play_type, self.current_offense, self.current_defense)
+        
+        # Advance clock before play execution
+        self.clock.resume()
+        if self.state.state == 'down':
+            self.clock.tick(random.randint(6, 15))
+
+        # Execute the play
+        yards_gained = play.execute()
+
+        # Handle turnover
+        if play.turnover:
+            self.turnover()
+
+        # Update game state
+        self.calc_ball_pos(yards_gained)
+        self.post_play(yards_gained)
+        
+        # Additional clock management
+        if not self.clock.is_game_over() and not self.clock.halftime and not self.clock.overtime:
+            if yards_gained > 0 and self.state.state == 'down':
+                self.clock.tick(random.randint(10, 20))
+                
+        # Check for overtime
+        if self.clock.is_game_over() and self.playoff and self.score.home_score == self.score.away_score and self.state.overtime_round == 0:
+            self.state.overtime = True
+            self.clock.overtime = True
+            self.play_ot()
+
+    def _create_play(self, play_type, offense, defense):
+        """Create a play object (separated for testability)."""
+        return create_play(play_type, offense, defense)
+
+    # State updates after plays
+    def calc_ball_pos(self, yards_gained):
+        """Calculate new ball position after yards gained/lost."""
+        # Update raw ball position based on direction
+        if self.current_offense == self.home:
+            self.state.ball_pos_raw += yards_gained
+        else:
+            self.state.ball_pos_raw -= yards_gained
+            
+        # Calculate position relative to midfield
+        self.state.ball_pos = 50 - abs(self.state.ball_pos_raw - 50)
+        
+        # Determine territory
+        if self.state.ball_pos_raw < 50:
+            self.state.territory = 'home'
+        elif self.state.ball_pos_raw == 50:
+            self.state.territory = 'midfield'
+        else:
+            self.state.territory = 'away'
+            
+        return self
+
+    def post_play(self, yards_gained):
+        """Update game state after a play is complete."""
+        self.calc_down(yards_gained)
+        self.points()
+        return self
+
+    def calc_down(self, yards_gained):
+        """Calculate new down and distance after play."""
+        self.state.yards_to_go -= yards_gained
+        
+        if self.state.yards_to_go <= 0:
+            # First down
+            self.state.down = 1
+            self.state.yards_to_go = 10
+        elif self.state.yards_to_go > 0 and self.state.down == 4:
+            # Turnover on downs
+            self.turnover()
+            self.state.down = 1
+            self.state.yards_to_go = 10
+        elif self.state.state == 'pat':
+            # Point after touchdown
+            self.state.down = 'PAT'
+        else:
+            # Next down
+            self.state.down += 1
+            
+        return self
+
+    # Scoring logic
+    def points(self):
+        """Check for scoring and update points accordingly."""
+        # PAT conversion
+        if self.state.state == 'pat':
+            if (self.current_offense == self.home and self.state.ball_pos_raw >= 100) or \
+               (self.current_offense == self.away and self.state.ball_pos_raw <= 0):
+                if self.current_offense == self.home:
+                    self.score.home_score += 2
+                else:
+                    self.score.away_score += 2
+                self.state.state = 'kickoff'
+                
+        # Regular touchdown
+        elif self.state.state == 'down' and isinstance(self.state.down, int):
+            if self.state.ball_pos_raw >= 100:
+                self.score.home_score += 6
+                self.state.ball_pos_raw = 98
+                self.state.ball_pos = 2
+                self.state.down = 'PAT'
+                self.state.state = 'pat'
+                self.clock.stop()
+            elif self.state.ball_pos_raw <= 0:
+                self.score.away_score += 6
+                self.state.ball_pos_raw = 2
+                self.state.ball_pos = 2
+                self.state.down = 'PAT'
+                self.state.state = 'pat'
+                self.clock.stop()
+                
+        # Overtime scoring
+        elif self.state.state == 'overtime' and isinstance(self.state.down, int):
+            if self.state.ball_pos_raw >= 100:
+                if self.state.overtime_round in [1, 2]:
+                    self.score.home_score += 6
+                    self.state.state = 'pat'
+                    self.state.down = 'PAT'
+                elif self.state.overtime_round >= 3:
+                    self.score.home_score += 2
+                    self.state.state = 'kickoff'
+            elif self.state.ball_pos_raw <= 0:
+                if self.state.overtime_round in [1, 2]:
+                    self.score.away_score += 6
+                    self.state.state = 'pat'
+                    self.state.down = 'PAT'
+                elif self.state.overtime_round >= 3:
+                    self.score.away_score += 2
+                    self.state.state = 'kickoff'
+                
+        self.set_ball()
+        return self
+
+    # Team possession changes
+    def turnover(self):
+        """Handle turnover by switching offense and defense."""
+        self.current_offense, self.current_defense = self.current_defense, self.current_offense
+        if self.state.overtime:
+            self.state.state = 'ot-reset'
+        return self
+
+    # Utility methods
+    def ordinal(self, down):
+        """Convert numerical down to ordinal representation."""
+        if down == 1:
+            return '1st'
+        elif down == 2:
+            return '2nd'
+        elif down == 3:
+            return '3rd'
+        elif down == 4:
+            return '4th'
+        else:
+            return 'PAT'
