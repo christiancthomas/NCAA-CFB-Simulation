@@ -7,7 +7,7 @@ class TestTeam(unittest.TestCase):
     def test_team_creation(self):
         team = Team("Tigers")
         self.assertEqual(team.name, "Tigers")
-        self.assertEqual(len(team.players), 23)
+        self.assertEqual(len(team.players), 70)
 
     def test_display_team(self):
         team = Team("Lions")
@@ -16,8 +16,11 @@ class TestTeam(unittest.TestCase):
 
     def test_get_player(self):
         team = Team("Red Raiders")
-        self.assertEqual(len(team.get_players(position='Quarterback')), 1) # assumes we're stil creating only one qb
-        self.assertEqual([wr.first_name for wr in team.get_players(position='Wide Receiver')], ['Wide Receiver', 'Wide Receiver', 'Wide Receiver'])
+        self.assertEqual(len(team.get_players(position='Quarterback')), 3)
+        self.assertEqual(len(team.get_players(position='Wide Receiver')), 8)
+        # Test legacy position mapping for backwards compatibility
+        self.assertEqual(len(team.get_players(position='Offensive Tackle')), 6)  # 3 LT + 3 RT
+        self.assertEqual(len(team.get_players(position='Safety')), 6)  # 3 FS + 3 SS
 
     def test_update_player(self):
         team = Team("Oklahoma", "Sooners")

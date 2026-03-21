@@ -40,3 +40,4 @@ class Playoffs:
         champion = self.play_game(*finalists)
 
         print(f"The champion is {champion.name}")
+        return champion

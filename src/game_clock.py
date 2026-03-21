@@ -44,7 +44,7 @@ class GameClock:
 
     def is_game_over(self):
         if self.overtime == True:
-            return self
+            return True
         return self.quarter > 4
 
     # def is_halftime(self):
