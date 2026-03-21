@@ -4,6 +4,7 @@ from game_clock import GameClock
 from game_state import GameState
 from score import Score
 from play import create_play  # Import the factory function
+from stats import GameStats
 
 class Game:
     """Manages a football game between two teams."""
@@ -20,6 +21,7 @@ class Game:
         self.loser = None
         self.clock = GameClock()
         self.playoff = playoff
+        self.stats = GameStats(home_name, away_name)
 
     def start_game(self):
         """Start and run the entire game simulation."""
@@ -218,7 +220,39 @@ class Game:
 
     def _create_play(self, play_type, offense, defense):
         """Create a play object (separated for testability)."""
-        return create_play(play_type, offense, defense)
+        return create_play(play_type, offense, defense, stats=self.stats)
+
+    def get_stats(self):
+        """Return the game stats object."""
+        return self.stats
+
+    def get_box_score(self):
+        """Return a formatted box score string."""
+        lines = []
+        lines.append("=" * 50)
+        lines.append("BOX SCORE")
+        lines.append("=" * 50)
+        lines.append(f"{self.home.name}: {self.score.home_score}  -  {self.away.name}: {self.score.away_score}")
+        lines.append("-" * 50)
+
+        # Home team totals
+        home_totals = self.stats.get_team_totals(self.home.name)
+        lines.append(f"\n{self.home.name} Team Totals:")
+        if home_totals:
+            lines.append(f"  Passing: {home_totals['completions']}/{home_totals['pass_attempts']} for {home_totals['passing_yards']} yards, {home_totals['passing_tds']} TD, {home_totals['ints']} INT")
+            lines.append(f"  Rushing: {home_totals['rush_attempts']} carries for {home_totals['rushing_yards']} yards, {home_totals['rushing_tds']} TD")
+            lines.append(f"  Turnovers: {home_totals['fumbles'] + home_totals['ints']}")
+
+        # Away team totals
+        away_totals = self.stats.get_team_totals(self.away.name)
+        lines.append(f"\n{self.away.name} Team Totals:")
+        if away_totals:
+            lines.append(f"  Passing: {away_totals['completions']}/{away_totals['pass_attempts']} for {away_totals['passing_yards']} yards, {away_totals['passing_tds']} TD, {away_totals['ints']} INT")
+            lines.append(f"  Rushing: {away_totals['rush_attempts']} carries for {away_totals['rushing_yards']} yards, {away_totals['rushing_tds']} TD")
+            lines.append(f"  Turnovers: {away_totals['fumbles'] + away_totals['ints']}")
+
+        lines.append("\n" + "=" * 50)
+        return "\n".join(lines)
 
     # State updates after plays
     def calc_ball_pos(self, yards_gained):

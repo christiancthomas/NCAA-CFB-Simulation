@@ -1,0 +1,17 @@
+[project]
+name = "ncaa-cfb-simulation"
+version = "0.1.0"
+description = "NCAA College Football Simulation"
+requires-python = ">=3.10"
+dependencies = [
+    "numpy",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest",
+]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["src", "tests", "."]

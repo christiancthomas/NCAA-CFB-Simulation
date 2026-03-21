@@ -4,9 +4,10 @@ import numpy as np
 
 class Play:
     """Base class for all play types"""
-    def __init__(self, offense, defense):
+    def __init__(self, offense, defense, stats=None):
         self.offense = offense  # Team obj
         self.defense = defense  # Team obj
+        self.stats = stats  # GameStats obj (optional)
         self.yards_gained = None
         self.turnover = False
         self.players = {
@@ -56,8 +57,9 @@ class Play:
 
 class RunPlay(Play):
     """Represents a running play"""
-    def __init__(self, offense, defense):
-        super().__init__(offense, defense)
+    def __init__(self, offense, defense, stats=None):
+        super().__init__(offense, defense, stats)
+        self.carrier = self.offense.get_players(position='Running Back')[0]
 
     def execute(self):
         """Execute the run play with its phases"""
@@ -66,16 +68,22 @@ class RunPlay(Play):
         self.phase = 'backfield'
         self._backfield_phase()
         if self.yards_gained is not None:
+            if self.stats is not None:
+                self.stats.record_rush(self.carrier, self.yards_gained, team_name=self.offense.name)
             return self.yards_gained
 
         self.phase = 'second level'
         self._second_level_phase()
         if self.yards_gained is not None:
+            if self.stats is not None:
+                self.stats.record_rush(self.carrier, self.yards_gained, team_name=self.offense.name)
             return self.yards_gained
 
         # For now, just return a default value for the open field phase
         # TODO: Implement proper open field phase
         self.yards_gained = 25
+        if self.stats is not None:
+            self.stats.record_rush(self.carrier, self.yards_gained, team_name=self.offense.name)
         return self.yards_gained
 
     def _backfield_phase(self):
@@ -184,8 +192,10 @@ class RunPlay(Play):
 
 class PassPlay(Play):
     """Represents a passing play"""
-    def __init__(self, offense, defense):
-        super().__init__(offense, defense)
+    def __init__(self, offense, defense, stats=None):
+        super().__init__(offense, defense, stats)
+        self.passer = self.offense.get_players(position='Quarterback')[0]
+        self.target = None  # Set during _determine_pass_completion
 
     def execute(self):
         """Execute the pass play"""
@@ -211,21 +221,27 @@ class PassPlay(Play):
         """Determines if the pass is completed, incomplete, or intercepted"""
         # TODO: Implement more comprehensive pass completion logic
         # For now, simple random completion
-        qb = self.offense.get_players(position='Quarterback')[0]
-        target = random.choice(self.offense.get_players(position=['Wide Receiver', 'Tight End']))
+        qb = self.passer
+        self.target = random.choice(self.offense.get_players(position=['Wide Receiver', 'Tight End']))
         defender = random.choice(self.defense.get_players(position=['linebacker', 'Cornerback', 'Safety']))
 
         # Basic completion chance based on QB and WR ratings vs DB rating
-        completion_chance = (qb.rating + target.rating) / (2 * (defender.rating + 50))
+        completion_chance = (qb.rating + self.target.rating) / (2 * (defender.rating + 50))
         roll = random.random()
 
         if roll < completion_chance * 0.9:  # Completed pass
             self.yards_gained = random.randint(5, 25)
+            if self.stats is not None:
+                self.stats.record_pass(self.passer, self.target, completed=True, yards=self.yards_gained, team_name=self.offense.name)
         elif roll < completion_chance * 0.93:  # Interception
             self.turnover = True
             self.yards_gained = -random.randint(0, 20)  # Return yards
+            if self.stats is not None:
+                self.stats.record_pass(self.passer, self.target, completed=False, yards=0, intercepted=True, team_name=self.offense.name)
         else:  # Incomplete pass
             self.yards_gained = None
+            if self.stats is not None:
+                self.stats.record_pass(self.passer, self.target, completed=False, yards=0, team_name=self.offense.name)
 
     def _calculate_yards_after_catch(self):
         """Calculates yards gained after a completed catch"""
@@ -235,12 +251,12 @@ class PassPlay(Play):
             self.yards_gained += random.randint(0, 10)
 
 
-def create_play(play_type, offense, defense):
+def create_play(play_type, offense, defense, stats=None):
     """Factory function to create appropriate play object"""
     if play_type == 'run':
-        return RunPlay(offense, defense)
+        return RunPlay(offense, defense, stats)
     elif play_type == 'pass':
-        return PassPlay(offense, defense)
+        return PassPlay(offense, defense, stats)
     else:
         raise ValueError(f'{play_type} is not a valid play type.')
 

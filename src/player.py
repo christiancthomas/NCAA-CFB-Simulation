@@ -1,5 +1,43 @@
 import random
 
+POSITION_GROUPS = {
+    'QB': ['Quarterback'],
+    'RB': ['Running Back'],
+    'WR': ['Wide Receiver'],
+    'TE': ['Tight End'],
+    'OL': ['Left Tackle', 'Left Guard', 'Center', 'Right Guard', 'Right Tackle'],
+    'DL': ['Defensive Tackle', 'Edge'],
+    'LB': ['Outside Linebacker', 'Middle Linebacker'],
+    'DB': ['Cornerback', 'Free Safety', 'Strong Safety'],
+    'K': ['Kicker'],
+    'P': ['Punter'],
+}
+
+POSITION_TO_GROUP = {pos: group for group, positions in POSITION_GROUPS.items() for pos in positions}
+
+# Maps specific positions to their legacy/general position names (for jersey number generation)
+LEGACY_POSITION_MAP = {
+    'Quarterback': 'Quarterback',
+    'Running Back': 'Running Back',
+    'Wide Receiver': 'Wide Receiver',
+    'Tight End': 'Tight End',
+    'Left Tackle': 'Offensive Tackle',
+    'Left Guard': 'Offensive Guard',
+    'Center': 'Center',
+    'Right Guard': 'Offensive Guard',
+    'Right Tackle': 'Offensive Tackle',
+    'Edge': 'Edge',
+    'Defensive Tackle': 'Defensive Tackle',
+    'Outside Linebacker': 'Linebacker',
+    'Middle Linebacker': 'Linebacker',
+    'Cornerback': 'Cornerback',
+    'Free Safety': 'Safety',
+    'Strong Safety': 'Safety',
+    'Kicker': 'Kicker',
+    'Punter': 'Punter',
+}
+
+
 class Player:
     def __init__(self, first_name, last_name, position, rating, number,
                  side=None, class_desc='Freshman', years_played=0, redshirt=False
@@ -15,7 +53,7 @@ class Player:
         self.redshirt = redshirt
 
     def _define_side(self, position):
-        if position in ['Quarterback', 'Running Back', 'Wide Receiver', 'Tight End', 'Offensive Tackle', 'Offensive Guard', 'Center', 'Kicker', 'Punter']:
+        if position in ['Quarterback', 'Running Back', 'Wide Receiver', 'Tight End', 'Left Tackle', 'Left Guard', 'Center', 'Right Guard', 'Right Tackle', 'Kicker', 'Punter']:
             self.side = 'offense'
         else:
             self.side = 'defense'
@@ -43,11 +81,11 @@ class Player:
                 while number in o_nums:
                     number = random.choice([random.randint(0, 19), random.randint(80, 89)])
                 o_nums.append(number)
-            case 'Offensive Tackle':
+            case 'Left Tackle' | 'Right Tackle':
                 while number in o_nums:
                     number = random.randrange(50, 79)
                 o_nums.append(number)
-            case 'Offensive Guard':
+            case 'Left Guard' | 'Right Guard':
                 while number in o_nums:
                     number = random.randrange(50, 79)
                 o_nums.append(number)
@@ -63,7 +101,7 @@ class Player:
                 while number in d_nums:
                     number = random.randrange(0,99)
                 d_nums.append(number)
-            case 'Linebacker':
+            case 'Outside Linebacker' | 'Middle Linebacker':
                 while number in d_nums:
                     number = random.choice([random.randrange(0,19), random.randint(30, 59)])
                 d_nums.append(number)
@@ -71,7 +109,7 @@ class Player:
                 while number in d_nums:
                     number = random.randrange(0,49)
                 d_nums.append(number)
-            case 'Safety':
+            case 'Free Safety' | 'Strong Safety':
                 while number in d_nums:
                     number = random.randrange(0,49)
                 d_nums.append(number)
@@ -85,7 +123,7 @@ class Player:
                 o_nums.append(number)
 
         # defining side of ball
-        if position in ['Quarterback', 'Running Back', 'Wide Receiver', 'Tight End', 'Offensive Tackle', 'Offensive Guard', 'Center', 'Kicker', 'Punter']:
+        if position in ['Quarterback', 'Running Back', 'Wide Receiver', 'Tight End', 'Left Tackle', 'Left Guard', 'Center', 'Right Guard', 'Right Tackle', 'Kicker', 'Punter']:
             side = 'offense'
         elif position in ['Kicker', 'Punter']:
             side = 'special teams'
