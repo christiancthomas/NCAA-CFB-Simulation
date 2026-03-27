@@ -15,10 +15,12 @@ NCAA College Football season simulator written in Python. Simulates games play-b
 - Tests run against Python 3.10, 3.11, and 3.12
 
 ## Key Commands
-- **Run tests**: `python -m pytest tests/ -v`
-- **Run single test file**: `python -m pytest tests/test_game.py -v`
-- **Run simulation**: `python -m src.main`
-- **Run GUI**: `python gui.py`
+- **Run tests**: `python3.10 -m pytest tests/ -v`
+- **Run single test file**: `python3.10 -m pytest tests/test_game.py -v`
+- **Run simulation**: `python3.10 -m src.main`
+- **Run GUI**: `python3.10 gui.py`
+
+> **Note:** On this machine, use `python3.10` — it's the version with pytest installed. `python` is not aliased, and `python3` points to 3.13 which lacks project dependencies.
 
 ## Rules Reference
 Before modifying a mechanic, read its rules doc first:

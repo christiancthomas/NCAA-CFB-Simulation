@@ -21,3 +21,7 @@ def get_results():
 
 def get_top_teams(top_n=8):
     return season.get_top_teams(top_n)
+
+if __name__ == '__main__':
+    from cli import main as cli_main
+    cli_main()
