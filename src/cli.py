@@ -69,11 +69,13 @@ class CLI:
         print("  4. View Standings")
         print("  5. View Top 25")
         print("  6. Team Lookup")
-        print("  7. Sim Rest of Regular Season")
-        print("  8. Return to Main Menu")
+        print("  7. View Game Box Scores")
+        print("  8. View Season Leaders")
+        print("  9. Sim Rest of Regular Season")
+        print("  10. Return to Main Menu")
         print()
 
-        choice = self._get_choice("Select an option: ", range(1, 9))
+        choice = self._get_choice("Select an option: ", range(1, 11))
 
         if choice == 1:
             self._display_schedule()
@@ -88,9 +90,13 @@ class CLI:
         elif choice == 6:
             self._team_lookup()
         elif choice == 7:
+            self._display_game_stats()
+        elif choice == 8:
+            self._display_season_leaders()
+        elif choice == 9:
             self._sim_rest_of_season()
             return 'postseason'
-        elif choice == 8:
+        elif choice == 10:
             return 'main'
 
     def _postseason_menu(self):
@@ -103,10 +109,11 @@ class CLI:
         print("  1. View Final Standings")
         print("  2. View Playoff Bracket (Top 8)")
         print("  3. Run Playoffs")
-        print("  4. Return to Main Menu")
+        print("  4. View Season Leaders")
+        print("  5. Return to Main Menu")
         print()
 
-        choice = self._get_choice("Select an option: ", range(1, 5))
+        choice = self._get_choice("Select an option: ", range(1, 6))
 
         if choice == 1:
             self._display_standings()
@@ -116,6 +123,8 @@ class CLI:
             self._run_playoffs()
             return 'champion'
         elif choice == 4:
+            self._display_season_leaders()
+        elif choice == 5:
             return 'main'
 
     def _champion_screen(self):
@@ -126,17 +135,20 @@ class CLI:
         print("=" * 50)
         print()
         print("  1. View Final Standings")
-        print("  2. New Season")
-        print("  3. Quit")
+        print("  2. View Season Leaders")
+        print("  3. New Season")
+        print("  4. Quit")
         print()
 
-        choice = self._get_choice("Select an option: ", range(1, 4))
+        choice = self._get_choice("Select an option: ", range(1, 5))
 
         if choice == 1:
             self._display_standings()
         elif choice == 2:
-            return 'new_season'
+            self._display_season_leaders()
         elif choice == 3:
+            return 'new_season'
+        elif choice == 4:
             return 'quit'
 
     # ── State loops ───────────────────────────────────────────────
@@ -276,6 +288,54 @@ class CLI:
         print(f"    (4) {top_8[3]:<20} vs  (5) {top_8[4]}")
         print(f"    (2) {top_8[1]:<20} vs  (7) {top_8[6]}")
         print(f"    (3) {top_8[2]:<20} vs  (6) {top_8[5]}")
+        self._pause()
+
+    def _display_game_stats(self):
+        """Show box scores for the last played week."""
+        prev_week = self.season.current_week - 1
+        stats_list = self.season.get_game_stats_for_week(prev_week)
+        if not stats_list:
+            print(f"\nNo game stats available for Week {prev_week}.")
+            self._pause()
+            return
+
+        print(f"\n{'─' * 60}")
+        print(f"  Week {prev_week} Games")
+        print(f"{'─' * 60}")
+        for i, gs in enumerate(stats_list, 1):
+            print(f"  {i}. {gs.home_team} {gs.home_score} - {gs.away_team} {gs.away_score}")
+
+        try:
+            pick = int(input("\nSelect a game (0 to cancel): "))
+        except (ValueError, EOFError):
+            return
+        if pick < 1 or pick > len(stats_list):
+            return
+
+        print()
+        print(stats_list[pick - 1].format_box_score())
+        self._pause()
+
+    def _display_season_leaders(self):
+        """Show top 10 season leaders for key stat categories."""
+        categories = [
+            ('passing_yards', 'Top 10 Passing Yards'),
+            ('rushing_yards', 'Top 10 Rushing Yards'),
+            ('receiving_yards', 'Top 10 Receiving Yards'),
+        ]
+
+        for stat, title in categories:
+            leaders = self.season.get_season_leaders(stat, top_n=10)
+            print(f"\n{'─' * 70}")
+            print(f"  {title}")
+            print(f"{'─' * 70}")
+            print(f"  {'Rank':<6}{'Player':<25}{'Team':<20}{'Value':>8}")
+            print(f"  {'─' * 64}")
+            if not leaders:
+                print("  No stats recorded yet.")
+            for i, entry in enumerate(leaders, 1):
+                print(f"  {i:<6}{entry['name']:<25}{entry['team']:<20}{entry['value']:>8}")
+
         self._pause()
 
     def _team_lookup(self):

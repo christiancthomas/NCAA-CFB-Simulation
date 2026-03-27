@@ -18,8 +18,8 @@ class TestGame(unittest.TestCase):
         random.seed(42)
         np.random.seed(42)
 
-        # Create a test game
-        self.game = Game("Home Team", "Away Team")
+        # Create a test game with Team objects
+        self.game = Game(Team("Home Team"), Team("Away Team"))
 
         # Mock player retrieval instead of trying to add players
         # This lets us test without modifying the actual Team class

@@ -1,5 +1,5 @@
 import test_setup
-from src.stats import PlayerGameStats, GameStats
+from src.stats import PlayerGameStats, GameStats, SeasonStats
 from player import Player
 import unittest
 
@@ -215,6 +215,8 @@ class TestGameStats(unittest.TestCase):
         self.home_qb = Player("Tom", "Brady", "Quarterback", 99, 12, side="offense")
         self.home_rb = Player("Derrick", "Henry", "Running Back", 95, 22, side="offense")
         self.home_wr = Player("Justin", "Jefferson", "Wide Receiver", 97, 18, side="offense")
+
+        self.home_wr2 = Player("Ja'Marr", "Chase", "Wide Receiver", 96, 1, side="offense")
 
         self.away_qb = Player("Patrick", "Mahomes", "Quarterback", 99, 15, side="offense")
         self.away_lb = Player("Micah", "Parsons", "Linebacker", 98, 11, side="defense")
@@ -461,6 +463,173 @@ class TestGameStats(unittest.TestCase):
 
         self.assertEqual(home_totals['passing_yards'], 30)
         self.assertEqual(away_totals['passing_yards'], 20)
+
+    def test_qb_passes_to_two_different_receivers(self):
+        """Test that a QB passing to two different WRs tracks each receiver's stats separately."""
+        # QB completes two passes to WR1
+        self.game_stats.record_pass(
+            passer=self.home_qb, target=self.home_wr,
+            completed=True, yards=20, team_name="Home Tigers"
+        )
+        self.game_stats.record_pass(
+            passer=self.home_qb, target=self.home_wr,
+            completed=True, yards=35, td=True, team_name="Home Tigers"
+        )
+
+        # QB completes three passes to WR2
+        self.game_stats.record_pass(
+            passer=self.home_qb, target=self.home_wr2,
+            completed=True, yards=10, team_name="Home Tigers"
+        )
+        self.game_stats.record_pass(
+            passer=self.home_qb, target=self.home_wr2,
+            completed=True, yards=15, team_name="Home Tigers"
+        )
+        self.game_stats.record_pass(
+            passer=self.home_qb, target=self.home_wr2,
+            completed=True, yards=50, td=True, team_name="Home Tigers"
+        )
+
+        # QB should have aggregate totals
+        qb_stats = self.game_stats.get_player_stats(self.home_qb)
+        self.assertEqual(qb_stats.pass_attempts, 5)
+        self.assertEqual(qb_stats.completions, 5)
+        self.assertEqual(qb_stats.passing_yards, 130)
+        self.assertEqual(qb_stats.passing_tds, 2)
+
+        # WR1 (Jefferson) — 2 catches, 55 yards, 1 TD
+        wr1_stats = self.game_stats.get_player_stats(self.home_wr)
+        self.assertEqual(wr1_stats.receptions, 2)
+        self.assertEqual(wr1_stats.receiving_yards, 55)
+        self.assertEqual(wr1_stats.receiving_tds, 1)
+
+        # WR2 (Chase) — 3 catches, 75 yards, 1 TD
+        wr2_stats = self.game_stats.get_player_stats(self.home_wr2)
+        self.assertEqual(wr2_stats.receptions, 3)
+        self.assertEqual(wr2_stats.receiving_yards, 75)
+        self.assertEqual(wr2_stats.receiving_tds, 1)
+
+        # Both receivers should appear as distinct entries in player statlines
+        statlines = self.game_stats.get_player_statlines()
+        receiver_lines = [s for s in statlines if s['position'] == 'Wide Receiver']
+        self.assertEqual(len(receiver_lines), 2)
+        receiver_names = {s['name'] for s in receiver_lines}
+        self.assertEqual(receiver_names, {"#18 Justin Jefferson", "#1 Ja'Marr Chase"})
+
+
+class TestGameStatsPlayerInfo(unittest.TestCase):
+    """Tests for player metadata tracking in GameStats."""
+
+    def setUp(self):
+        self.game_stats = GameStats("Home Tigers", "Away Lions")
+        self.home_qb = Player("Tom", "Brady", "Quarterback", 99, 12, side="offense")
+        self.home_wr = Player("Justin", "Jefferson", "Wide Receiver", 97, 18, side="offense")
+        self.away_qb = Player("Patrick", "Mahomes", "Quarterback", 99, 15, side="offense")
+
+    def test_player_info_populated_on_record(self):
+        """_player_info is populated when stats are recorded."""
+        self.game_stats.record_pass(
+            passer=self.home_qb, target=self.home_wr,
+            completed=True, yards=20, team_name="Home Tigers"
+        )
+        qb_key = id(self.home_qb)
+        self.assertIn(qb_key, self.game_stats._player_info)
+        name, pos, team = self.game_stats._player_info[qb_key]
+        self.assertEqual(name, "#12 Tom Brady")
+        self.assertEqual(pos, "Quarterback")
+        self.assertEqual(team, "Home Tigers")
+
+    def test_get_player_statlines_returns_metadata(self):
+        """get_player_statlines() returns correct metadata + stats."""
+        self.game_stats.record_pass(
+            passer=self.home_qb, target=self.home_wr,
+            completed=True, yards=25, team_name="Home Tigers"
+        )
+        self.game_stats.record_rush(
+            carrier=self.away_qb, yards=10, team_name="Away Lions"
+        )
+
+        statlines = self.game_stats.get_player_statlines()
+        names = [s['name'] for s in statlines]
+        self.assertIn("#12 Tom Brady", names)
+        self.assertIn("#18 Justin Jefferson", names)
+        self.assertIn("#15 Patrick Mahomes", names)
+
+        qb_line = [s for s in statlines if s['name'] == "#12 Tom Brady"][0]
+        self.assertEqual(qb_line['team'], "Home Tigers")
+        self.assertEqual(qb_line['position'], "Quarterback")
+        self.assertEqual(qb_line['stats'].passing_yards, 25)
+
+    def test_format_box_score(self):
+        """format_box_score() returns a non-empty string with team names."""
+        self.game_stats.home_score = 21
+        self.game_stats.away_score = 14
+        self.game_stats.record_pass(
+            passer=self.home_qb, target=self.home_wr,
+            completed=True, yards=30, td=True, team_name="Home Tigers"
+        )
+        box = self.game_stats.format_box_score()
+        self.assertIn("Home Tigers", box)
+        self.assertIn("Away Lions", box)
+        self.assertIn("21", box)
+        self.assertIn("14", box)
+
+
+class TestSeasonStats(unittest.TestCase):
+    """Tests for SeasonStats class."""
+
+    def setUp(self):
+        self.season_stats = SeasonStats()
+        self.qb = Player("Tom", "Brady", "Quarterback", 99, 12, side="offense")
+        self.wr = Player("Justin", "Jefferson", "Wide Receiver", 97, 18, side="offense")
+        self.rb = Player("Derrick", "Henry", "Running Back", 95, 22, side="offense")
+
+    def _make_game_stats(self, team_name="Tigers"):
+        """Helper to create a GameStats with some recorded plays."""
+        gs = GameStats(team_name, "Opponent")
+        return gs
+
+    def test_add_game_accumulates(self):
+        """add_game() accumulates stats from multiple games."""
+        gs1 = self._make_game_stats()
+        gs1.record_pass(self.qb, self.wr, completed=True, yards=100, team_name="Tigers")
+        self.season_stats.add_game(gs1)
+
+        gs2 = self._make_game_stats()
+        gs2.record_pass(self.qb, self.wr, completed=True, yards=150, team_name="Tigers")
+        self.season_stats.add_game(gs2)
+
+        leaders = self.season_stats.get_leaders('passing_yards')
+        qb_entry = [e for e in leaders if e['name'] == "#12 Tom Brady"]
+        self.assertEqual(len(qb_entry), 1)
+        self.assertEqual(qb_entry[0]['value'], 250)
+
+    def test_get_leaders_sorted(self):
+        """get_leaders() returns sorted results."""
+        gs = self._make_game_stats()
+        gs.record_pass(self.qb, self.wr, completed=True, yards=200, team_name="Tigers")
+        gs.record_rush(self.rb, yards=300, team_name="Tigers")
+        self.season_stats.add_game(gs)
+
+        rushing_leaders = self.season_stats.get_leaders('rushing_yards')
+        self.assertEqual(rushing_leaders[0]['name'], "#22 Derrick Henry")
+        self.assertEqual(rushing_leaders[0]['value'], 300)
+
+    def test_get_leaders_respects_top_n(self):
+        """get_leaders() respects top_n parameter."""
+        gs = self._make_game_stats()
+        gs.record_pass(self.qb, self.wr, completed=True, yards=100, team_name="Tigers")
+        gs.record_rush(self.rb, yards=50, team_name="Tigers")
+        self.season_stats.add_game(gs)
+
+        # Only ask for 1 leader
+        leaders = self.season_stats.get_leaders('receiving_yards', top_n=1)
+        self.assertLessEqual(len(leaders), 1)
+
+    def test_empty_season_returns_empty_leaders(self):
+        """Empty season returns empty leaders list."""
+        leaders = self.season_stats.get_leaders('passing_yards')
+        self.assertEqual(leaders, [])
 
 
 if __name__ == "__main__":

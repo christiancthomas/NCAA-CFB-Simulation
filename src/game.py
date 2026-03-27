@@ -1,5 +1,4 @@
 import random
-from team import Team
 from game_clock import GameClock
 from game_state import GameState
 from score import Score
@@ -8,11 +7,17 @@ from stats import GameStats
 
 class Game:
     """Manages a football game between two teams."""
-    
-    def __init__(self, home_name, away_name, playoff=False):
-        """Initialize a new game between two teams."""
-        self.home = Team(home_name)
-        self.away = Team(away_name)
+
+    def __init__(self, home, away, playoff=False):
+        """Initialize a new game between two teams.
+
+        Args:
+            home: Team object for the home team
+            away: Team object for the away team
+            playoff: Whether this is a playoff game
+        """
+        self.home = home
+        self.away = away
         self.score = Score()
         self.state = GameState()
         self.current_offense = self.home
@@ -21,7 +26,8 @@ class Game:
         self.loser = None
         self.clock = GameClock()
         self.playoff = playoff
-        self.stats = GameStats(home_name, away_name)
+        self.stats = GameStats(home.name, away.name)
+        self._last_play = None
 
     def start_game(self):
         """Start and run the entire game simulation."""
@@ -198,6 +204,7 @@ class Game:
 
         # Execute the play
         yards_gained = play.execute()
+        self._last_play = play
 
         # Handle turnover
         if play.turnover:
@@ -321,6 +328,7 @@ class Game:
         elif self.state.state == 'down' and isinstance(self.state.down, int):
             if self.state.ball_pos_raw >= 100:
                 self.score.home_score += 6
+                self._credit_touchdown()
                 self.state.ball_pos_raw = 98
                 self.state.ball_pos = 2
                 self.state.down = 'PAT'
@@ -328,6 +336,7 @@ class Game:
                 self.clock.stop()
             elif self.state.ball_pos_raw <= 0:
                 self.score.away_score += 6
+                self._credit_touchdown()
                 self.state.ball_pos_raw = 2
                 self.state.ball_pos = 2
                 self.state.down = 'PAT'
@@ -339,22 +348,48 @@ class Game:
             if self.state.ball_pos_raw >= 100:
                 if self.state.overtime_round in [1, 2]:
                     self.score.home_score += 6
+                    self._credit_touchdown()
                     self.state.state = 'pat'
                     self.state.down = 'PAT'
                 elif self.state.overtime_round >= 3:
                     self.score.home_score += 2
+                    self._credit_touchdown()
                     self.state.state = 'kickoff'
             elif self.state.ball_pos_raw <= 0:
                 if self.state.overtime_round in [1, 2]:
                     self.score.away_score += 6
+                    self._credit_touchdown()
                     self.state.state = 'pat'
                     self.state.down = 'PAT'
                 elif self.state.overtime_round >= 3:
                     self.score.away_score += 2
+                    self._credit_touchdown()
                     self.state.state = 'kickoff'
                 
         self.set_ball()
         return self
+
+    def _credit_touchdown(self):
+        """Credit a touchdown to the players involved in the last play."""
+        play = self._last_play
+        if play is None or self.stats is None:
+            return
+
+        # RunPlay has a 'carrier' attribute
+        if hasattr(play, 'carrier'):
+            player_stats = self.stats.get_player_stats(play.carrier)
+            if player_stats:
+                player_stats.rushing_tds += 1
+
+        # PassPlay has 'passer' and 'target' attributes
+        elif hasattr(play, 'passer') and hasattr(play, 'target'):
+            if play.target is not None and play.yards_gained is not None and play.yards_gained > 0:
+                passer_stats = self.stats.get_player_stats(play.passer)
+                if passer_stats:
+                    passer_stats.passing_tds += 1
+                target_stats = self.stats.get_player_stats(play.target)
+                if target_stats:
+                    target_stats.receiving_tds += 1
 
     # Team possession changes
     def turnover(self):

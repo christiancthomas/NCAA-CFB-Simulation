@@ -2,6 +2,7 @@ import random
 from collections import defaultdict
 from game import Game
 from playoffs import Playoffs
+from stats import SeasonStats
 
 class Season:
     def __init__(self, teams):
@@ -12,6 +13,7 @@ class Season:
         self.standings = {team.name: {'wins': 0, 'losses': 0, 'ties': 0} for team in teams}
         self.matchups = set()
         self.game_stats = {}
+        self.season_stats = SeasonStats()
         self.champion = None
         self.playoff_results = []
         self.generate_schedule()
@@ -96,7 +98,7 @@ class Season:
         """
         Simulates a game between two teams and updates the standings.
         """
-        game = Game(home_team.name, away_team.name)
+        game = Game(home_team, away_team)
         game.start_game()
         if game.winner:
             self.standings[game.winner.name]['wins'] += 1
@@ -106,7 +108,11 @@ class Season:
             self.standings[away_team.name]['ties'] += 1
         result = f"{home_team.name} {game.score.home_score} - {away_team.name} {game.score.away_score}"
         self.results[self.current_week].append(result)
-        self.game_stats.setdefault(self.current_week, []).append(game.get_stats())
+        stats = game.get_stats()
+        stats.home_score = game.score.home_score
+        stats.away_score = game.score.away_score
+        self.game_stats.setdefault(self.current_week, []).append(stats)
+        self.season_stats.add_game(stats)
 
     def play_week(self):
         if self.current_week in self.schedule:
@@ -167,6 +173,14 @@ class Season:
         champion = playoffs.play_playoffs()
         self.champion = champion
         return champion
+
+    def get_game_stats_for_week(self, week):
+        """Returns list of GameStats for the given week."""
+        return self.game_stats.get(week, [])
+
+    def get_season_leaders(self, stat, top_n=10):
+        """Returns top N players for a given stat across the season."""
+        return self.season_stats.get_leaders(stat, top_n)
 
     def simulate_full_season(self):
         """Simulate entire season including playoffs."""
