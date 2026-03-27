@@ -112,9 +112,12 @@ class GameStats:
         """
         self.home_team = home_team
         self.away_team = away_team
+        self.home_score = 0
+        self.away_score = 0
         self._home_stats = {}  # player -> PlayerGameStats
         self._away_stats = {}  # player -> PlayerGameStats
         self._player_teams = {}  # player -> team_name (for lookup)
+        self._player_info = {}  # player_key -> (full_name, position, team_name)
 
     def _get_or_create_stats(self, player, team_name=None):
         """Get or create PlayerGameStats for a player.
@@ -134,6 +137,19 @@ class GameStats:
             team_name = self._player_teams[player_key]
         elif team_name:
             self._player_teams[player_key] = team_name
+
+        # Record player metadata when first seen
+        if player_key not in self._player_info:
+            resolved_team = team_name or self._player_teams.get(player_key, "Unknown")
+            number = getattr(player, 'number', '')
+            name = f"{player.first_name} {player.last_name}"
+            if number != '':
+                name = f"#{number} {player.first_name} {player.last_name}"
+            self._player_info[player_key] = (
+                name,
+                player.position,
+                resolved_team
+            )
 
         # Get the appropriate stats dictionary
         if team_name == self.home_team:
@@ -284,3 +300,121 @@ class GameStats:
             totals['def_tds'] += player_stats.def_tds
 
         return totals
+
+    def get_player_statlines(self):
+        """Return list of dicts with player info + stats for all players in this game."""
+        statlines = []
+        for player_key, pgs in {**self._home_stats, **self._away_stats}.items():
+            name, position, team = self._player_info.get(
+                player_key, ("Unknown", "Unknown", "Unknown")
+            )
+            statlines.append({
+                'name': name, 'position': position, 'team': team, 'stats': pgs
+            })
+        return statlines
+
+    def format_box_score(self):
+        """Return a formatted box score string."""
+        lines = []
+        lines.append("=" * 60)
+        lines.append("BOX SCORE")
+        lines.append("=" * 60)
+        lines.append(
+            f"{self.home_team}: {self.home_score}  -  "
+            f"{self.away_team}: {self.away_score}"
+        )
+        lines.append("-" * 60)
+
+        for team_name, stats_dict in [
+            (self.home_team, self._home_stats),
+            (self.away_team, self._away_stats),
+        ]:
+            totals = self.get_team_totals(team_name)
+            lines.append(f"\n{team_name} Team Totals:")
+            if totals:
+                lines.append(
+                    f"  Passing: {totals['completions']}/{totals['pass_attempts']} "
+                    f"for {totals['passing_yards']} yards, "
+                    f"{totals['passing_tds']} TD, {totals['ints']} INT"
+                )
+                lines.append(
+                    f"  Rushing: {totals['rush_attempts']} carries "
+                    f"for {totals['rushing_yards']} yards, "
+                    f"{totals['rushing_tds']} TD"
+                )
+                lines.append(
+                    f"  Turnovers: {totals['fumbles'] + totals['ints']}"
+                )
+
+            # Individual player lines
+            for player_key, pgs in stats_dict.items():
+                name, position, _ = self._player_info.get(
+                    player_key, ("Unknown", "Unknown", team_name)
+                )
+                parts = []
+                if pgs.pass_attempts > 0:
+                    parts.append(
+                        f"{pgs.completions}/{pgs.pass_attempts} "
+                        f"{pgs.passing_yards} pass yds, "
+                        f"{pgs.passing_tds} TD, {pgs.ints} INT"
+                    )
+                if pgs.rush_attempts > 0:
+                    parts.append(
+                        f"{pgs.rush_attempts} car, "
+                        f"{pgs.rushing_yards} rush yds, "
+                        f"{pgs.rushing_tds} TD"
+                    )
+                if pgs.receptions > 0:
+                    parts.append(
+                        f"{pgs.receptions} rec, "
+                        f"{pgs.receiving_yards} rec yds, "
+                        f"{pgs.receiving_tds} TD"
+                    )
+                if parts:
+                    lines.append(f"    {name} ({position}): {' | '.join(parts)}")
+
+        lines.append("\n" + "=" * 60)
+        return "\n".join(lines)
+
+
+class SeasonStats:
+    """Aggregates player statistics across an entire season."""
+
+    def __init__(self):
+        self._stats = {}  # (team, name, position) -> PlayerGameStats (cumulative)
+        self._player_info = {}  # (team, name, position) -> (name, position, team)
+
+    def add_game(self, game_stats):
+        """Merge a GameStats into season totals."""
+        for statline in game_stats.get_player_statlines():
+            key = (statline['team'], statline['name'], statline['position'])
+            if key not in self._stats:
+                self._stats[key] = PlayerGameStats()
+                self._player_info[key] = (
+                    statline['name'], statline['position'], statline['team']
+                )
+            self._accumulate(self._stats[key], statline['stats'])
+
+    def _accumulate(self, target, source):
+        """Add all numeric stat fields from source into target."""
+        for attr in vars(source):
+            val = getattr(source, attr)
+            if isinstance(val, (int, float)):
+                setattr(target, attr, getattr(target, attr) + val)
+
+    def get_leaders(self, stat, top_n=10):
+        """Top N players for a given stat, sorted descending."""
+        entries = []
+        for key, pgs in self._stats.items():
+            value = getattr(pgs, stat, 0)
+            if value > 0:
+                name, position, team = self._player_info[key]
+                entries.append({
+                    'name': name,
+                    'position': position,
+                    'team': team,
+                    'stats': pgs,
+                    'value': value,
+                })
+        entries.sort(key=lambda e: e['value'], reverse=True)
+        return entries[:top_n]
