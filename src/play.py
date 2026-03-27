@@ -54,12 +54,50 @@ class Play:
             if min_val <= result <= max_val:
                 return round(result)
 
+    def _check_fumble(self, ballcarrier, base_rate=0.02):
+        """Check if the ballcarrier fumbles. Higher-rated carriers fumble less.
+
+        Args:
+            ballcarrier: The player carrying the ball
+            base_rate: Base fumble probability (~2% per carry/catch)
+
+        Returns:
+            True if a fumble occurred, False otherwise
+        """
+        # Scale fumble chance: lower-rated players fumble more
+        fumble_chance = base_rate * (1.3 - ballcarrier.rating / 100)
+        if random.random() >= fumble_chance:
+            return False
+
+        # Fumble occurred — pick a defender who forced/recovered it
+        all_defenders = (
+            self.players.get('edges', []) + self.players.get('dts', [])
+            + self.players.get('lbs', []) + self.players.get('cbs', [])
+            + self.players.get('safeties', [])
+        )
+        forcer = random.choice(all_defenders) if all_defenders else None
+        recoverer = random.choice(all_defenders) if all_defenders else None
+
+        self.turnover = True
+        self.fumble_forced_by = forcer
+        print(f"FUMBLE by {ballcarrier.first_name} {ballcarrier.last_name}!")
+
+        if self.stats is not None:
+            def_team = self.defense.name
+            if forcer is not None:
+                self.stats._get_or_create_stats(forcer, def_team).add_forced_fumble()
+            if recoverer is not None:
+                self.stats._get_or_create_stats(recoverer, def_team).add_fumble_recovery()
+
+        return True
+
 
 class RunPlay(Play):
     """Represents a running play"""
     def __init__(self, offense, defense, stats=None):
         super().__init__(offense, defense, stats)
         self.carrier = self.offense.get_players(position='Running Back')[0]
+        self.fumble_forced_by = None  # defender who forced the fumble
 
     def execute(self):
         """Execute the run play with its phases"""
@@ -68,22 +106,25 @@ class RunPlay(Play):
         self.phase = 'backfield'
         self._backfield_phase()
         if self.yards_gained is not None:
+            fumbled = self._check_fumble(self.carrier)
             if self.stats is not None:
-                self.stats.record_rush(self.carrier, self.yards_gained, team_name=self.offense.name)
+                self.stats.record_rush(self.carrier, self.yards_gained, fumbled=fumbled, team_name=self.offense.name)
             return self.yards_gained
 
         self.phase = 'second level'
         self._second_level_phase()
         if self.yards_gained is not None:
+            fumbled = self._check_fumble(self.carrier)
             if self.stats is not None:
-                self.stats.record_rush(self.carrier, self.yards_gained, team_name=self.offense.name)
+                self.stats.record_rush(self.carrier, self.yards_gained, fumbled=fumbled, team_name=self.offense.name)
             return self.yards_gained
 
         # For now, just return a default value for the open field phase
         # TODO: Implement proper open field phase
         self.yards_gained = 25
+        fumbled = self._check_fumble(self.carrier)
         if self.stats is not None:
-            self.stats.record_rush(self.carrier, self.yards_gained, team_name=self.offense.name)
+            self.stats.record_rush(self.carrier, self.yards_gained, fumbled=fumbled, team_name=self.offense.name)
         return self.yards_gained
 
     def _backfield_phase(self):
@@ -214,6 +255,15 @@ class PassPlay(Play):
 
         # Pass was completed, calculate yards after catch
         self._calculate_yards_after_catch()
+
+        # Check for fumble after catch
+        if self.target is not None and not self.turnover:
+            if self._check_fumble(self.target):
+                if self.stats is not None:
+                    # Record the fumble on the receiver's stats
+                    target_stats = self.stats.get_player_stats(self.target)
+                    if target_stats:
+                        target_stats.fumbles += 1
 
         return self.yards_gained
 

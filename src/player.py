@@ -1,4 +1,7 @@
 import random
+from faker import Faker
+
+fake = Faker()
 
 POSITION_GROUPS = {
     'QB': ['Quarterback'],
@@ -131,8 +134,8 @@ class Player:
             side = 'defense'
 
         return Player(
-            first_name=f"{position}",
-            last_name=f"{number}",
+            first_name=fake.first_name_male(),
+            last_name=fake.last_name(),
             position=position,
             rating=random.randint(50, 99),
             number=number,

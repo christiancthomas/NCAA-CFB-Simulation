@@ -41,7 +41,7 @@ Rules governing in-game simulation mechanics. Read this before modifying `game.p
 ## Turnovers
 - Interception: occurs on failed pass completion roll (~3% chance), changes possession
 - Turnover on downs: failing to convert on 4th down
-- Fumbles: not yet implemented
+- Fumbles: ~2% base chance per carry/catch, scaled by ballcarrier rating (lower-rated players fumble more). A fumble is a turnover — a random defender is credited with the forced fumble and fumble recovery.
 
 ## Coin Toss and Possession
 - Pre-game coin toss randomly assigns receive/defend
